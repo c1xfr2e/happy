@@ -23,5 +23,5 @@ def fetch_hgt():
 
 while True:
     now = datetime.now()
-    print(datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), fetch_hgt())
+    print datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), fetch_hgt()
     time.sleep(30)

@@ -73,13 +73,13 @@ date_count = len(date_lis)
 records_root = top_tradable_shareholders_root.find(id='TTCS_Table_Div')
 records_tables = records_root.find_all('table')
 for date_li, record_table in zip(date_lis, records_tables):
-    print(date_li.text)
+    print date_li.text
     trs = record_table.find_all('tr')
     for tr in trs[1:]:
         tds = tr.find_all('td')
         for td in tds:
-            print(td.text, end=' ')
-        print()
+            print td.text, ' '
+        print
 
 
 def eastmoney_top_shareholders(ticker, tradable):
