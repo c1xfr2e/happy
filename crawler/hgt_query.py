@@ -14,9 +14,9 @@ def fetch_hgt():
     number_text = re.findall('[\d\.-]+', hk_to_sh_text)[0]
     number = float(number_text)
     hk_to_sh_money = 0
-    if '亿' in hk_to_sh_text:
+    if u'亿' in hk_to_sh_text:
         hk_to_sh_money = number * 10000 * 10000
-    elif '万' in hk_to_sh_text:
+    elif u'万' in hk_to_sh_text:
         hk_to_sh_money = number * 10000
     return hk_to_sh_text, hk_to_sh_money
 
