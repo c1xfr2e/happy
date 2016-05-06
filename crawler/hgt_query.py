@@ -2,7 +2,6 @@
 
 import requests
 import re
-import decimal
 import time
 from datetime import datetime
 
@@ -23,5 +22,6 @@ def fetch_hgt():
 
 while True:
     now = datetime.now()
-    print datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), fetch_hgt()
+    hgt = fetch_hgt()
+    print datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), hgt[0], hgt[1]
     time.sleep(30)

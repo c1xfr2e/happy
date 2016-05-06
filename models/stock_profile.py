@@ -1,20 +1,18 @@
 # coding: utf-8
 
-from sqlalchemy import Column, Integer, Numeric, String, Date
+from sqlalchemy import Column, Integer, Numeric, String, Date, Enum
 from . import Base
 
 
-class Stock(Base):
+class StockProfile(Base):
     """ Model for stock basic infomations. """
 
-    __tablename__ = 'stock'
-
-    # id = Column(String, primary_key=True)
+    __tablename__ = 'stock_profile'
 
     ticker = Column(String(6), primary_key=True)
+    pinyin = Column(String(16))
 
     short_name = Column(String(16), nullable=False, unique=True)
-    pinyin = Column(String(16))
     full_name = Column(String(32))
 
     listing_date = Column(Date)
@@ -32,7 +30,3 @@ class Stock(Base):
     revenue_growth = Column(Numeric(precision=4, scale=4))
     net_income = Column(Integer)
     net_income_growth = Column(Numeric(precision=4, scale=4))
-
-    # operating_income = Column(Integer)
-
-    net_asset_value_per_share = Column(Numeric(precision=10, scale=4))

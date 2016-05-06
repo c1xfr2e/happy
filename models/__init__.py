@@ -10,4 +10,4 @@ Base = declarative_base()
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
-from stock import Stock
+from stock_profile import StockProfile
