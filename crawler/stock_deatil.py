@@ -4,6 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 from db import db_conn
 from text_util import text_to_number
+from datetime import datetime
+from db.mongo import client as mongo_client
+
 
 '''
 cursor = db_conn.cursor()
@@ -17,7 +20,9 @@ except Exception as e:
     print 'select error', e
 '''
 
-url = 'http://quote.eastmoney.com/sh600309.html'
+ticker = '300342'
+
+url = 'http://quote.eastmoney.com/sh300342.html'
 r = requests.get(url)
 soup = BeautifulSoup(r.content.decode('gbk'))
 
@@ -41,6 +46,8 @@ ROE 3.76%
 每股未分配利润 3.402元
 上市时间 2001-01-05
 '''
+
+ticker = '300342'
 
 texts = []
 trs = soup.find('table', id='rtp2').find('tbody').find_all('tr')
@@ -66,10 +73,34 @@ net_income = text_to_number(datas.get(u'净利润', u'0'))
 net_income_growth = text_to_number(texts[7][1])
 roe = text_to_number(datas.get(u'ROE', u'0.0'))
 shares_outstanding = text_to_number(datas.get(u'总股本', u'0'))
-shares_tradable = text_to_number(datas.get(u'总股本', u'0'))
+shares_in_circulation = text_to_number(datas.get(u'总股本', u'0'))
 retained_earnings_per_share = text_to_number(datas.get(u'每股未分配利润', u'0'))
 listing_date = datas.get(u'上市时间')
 
+stock_prifile = {
+    'eps': eps,
+    'pe': pe,
+    'net_asset_value_per_share': net_asset_value_per_share,
+    'pb': pb,
+    'revenue': revenue,
+    'revenue_growth': revenue_growth,
+    'net_income': net_income,
+    'net_income_growth': net_income_growth,
+    'roe': roe,
+    'shares_outstanding': shares_outstanding,
+    'shares_in_circulation': shares_in_circulation,
+    'retained_earnings_per_share': retained_earnings_per_share,
+    'listing_date': datetime.strptime(listing_date, '%Y-%m-%d').date()
+}
+
+c_stock_profiles = mongo_client.alchemist.stock_profile
+result = c_stock_profiles.upsert(
+    { 'ticker': ticker },
+    stock_prifile,
+    upsert=True
+)
+print result
+
 print eps, pe, net_asset_value_per_share, pb, revenue, revenue_growth, net_income,\
-      net_income_growth, roe, shares_outstanding, shares_tradable,\
+      net_income_growth, roe, shares_outstanding, shares_in_circulation,\
       retained_earnings_per_share, listing_date
