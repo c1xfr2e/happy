@@ -2,10 +2,8 @@
 
 import requests
 from bs4 import BeautifulSoup
-from db import db_conn
 from text_util import text_to_number
 from datetime import datetime
-from db.mongo import client as mongo_client
 
 
 '''
@@ -50,14 +48,21 @@ def fetch_stock_profile(stock_code):
             texts.append(td.text.split(u'：'))
 
     datas = {_[0]: _[1] for _ in texts}
-    for k, v in datas.iteritems():
-        print k, v
+
+    # for k, v in datas.iteritems():
+    #    print k, v
 
     eps = datas.get(u'收益(一)', None)
     if eps is None:
         eps = datas.get(u'收益')
-    eps = float(eps)
-    pe = float(datas.get(u'PE(动)', 0))
+    try:
+        eps = float(eps)
+    except:
+        eps = 0.0
+    try:
+        pe = float(datas.get(u'PE(动)', 0))
+    except:
+        pe = 0
     net_asset_value_per_share = float(datas.get(u'净资产', u'0'))
     pb = text_to_number(datas.get(u'净利率', u'0'))
     revenue = text_to_number(datas.get(u'收入', u'0'))
@@ -97,3 +102,8 @@ def fetch_stock_profile(stock_code):
           net_income_growth, roe, shares_outstanding, shares_in_circulation,\
           retained_earnings_per_share, listing_date
     '''
+
+
+if __name__ == '__main__':
+    profile = fetch_stock_profile('000990')
+    print profile

@@ -1,31 +1,37 @@
 
 from crawler.stock_deatil import fetch_stock_profile
-from db import db_conn
 from db.mongo import client
 
+codes_objs = client.alchemist.stock_codes.find(
+    { 'status': {'$ne': 'fetch_profile_succeed'}}
+)
+stock_codes = [_['code'] for _ in codes_objs]
 
-cursor = db_conn.cursor()
-sql = 'select * from hs_ticker'
-stock_codes = []
-try:
-    cursor.execute(sql)
-    stock_codes = [_[0] for _ in cursor.fetchall()]
-except Exception as e:
-    print 'select error', e
-
-bad_codes = []
+failed_codes = []
 
 for code in stock_codes:
-    stock_profile = fetch_stock_profile(code)
-
-    if not stock_profile:
-        bad_codes.append(code)
+    try:
+        stock_profile = fetch_stock_profile(code)
+    except Exception as e:
+        print code, e
+        failed_codes.append(code)
         continue
 
     c_stock_profiles = client.alchemist.stock_profile
     result = c_stock_profiles.update(
-        { 'code': code },
+        {'code': code},
         stock_profile,
         upsert=True
     )
     print result
+    client.alchemist.stock_codes.update(
+        {'code': code},
+        {'$set': {'status': 'fetch_profile_succeed'}}
+    )
+
+result = client.alchemist.stock_codes.update(
+    {'codes': {'$in': failed_codes}},
+    {'$set': {'status': 'fetch_profile_failed'}},
+    multi=True
+)
+print result
