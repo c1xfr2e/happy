@@ -70,8 +70,8 @@ def fetch_stock_profile(stock_code):
     net_income = text_to_number(datas.get(u'净利润', u'0'))
     net_income_growth = text_to_number(texts[7][1])
     roe = text_to_number(datas.get(u'ROE', u'0.0'))
-    shares_outstanding = text_to_number(datas.get(u'总股本', u'0'))
-    shares_in_circulation = text_to_number(datas.get(u'总股本', u'0'))
+    shares_total = text_to_number(datas.get(u'总股本', u'0'))
+    shares_outstanding = text_to_number(datas.get(u'流通股', u'0'))
     retained_earnings_per_share = text_to_number(datas.get(u'每股未分配利润', u'0'))
     listing_date_str = datas.get(u'上市时间')
 
@@ -84,24 +84,18 @@ def fetch_stock_profile(stock_code):
         'pe': pe,
         'net_asset_value_per_share': net_asset_value_per_share,
         'pb': pb,
-        'revenue': revenue,
+        'revenue': int(revenue),
         'revenue_growth': revenue_growth,
-        'net_income': net_income,
+        'net_income': int(net_income),
         'net_income_growth': net_income_growth,
         'roe': roe,
-        'shares_outstanding': shares_outstanding,
-        'shares_in_circulation': shares_in_circulation,
+        'shares_total': int(shares_total),
+        'shares_outstanding': int(shares_outstanding),
         'retained_earnings_per_share': retained_earnings_per_share,
         'listing_date': listing_date_str.replace('-', '')
     }
 
     return stock_profile
-
-    '''
-    print eps, pe, net_asset_value_per_share, pb, revenue, revenue_growth, net_income,\
-          net_income_growth, roe, shares_outstanding, shares_in_circulation,\
-          retained_earnings_per_share, listing_date
-    '''
 
 
 if __name__ == '__main__':
