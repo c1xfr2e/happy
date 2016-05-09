@@ -3,7 +3,7 @@ from crawler.stock_deatil import fetch_stock_profile
 from db.mongo import client
 
 codes_objs = client.alchemist.stock_codes.find(
-    { 'status': {'$ne': 'fetch_profile_succeed'}}
+    {'status': {'$ne': 'fetch_profile_succeed'}}
 )
 stock_codes = [_['code'] for _ in codes_objs]
 
@@ -30,7 +30,7 @@ for code in stock_codes:
     )
 
 result = client.alchemist.stock_codes.update(
-    {'codes': {'$in': failed_codes}},
+    {'code': {'$in': failed_codes}},
     {'$set': {'status': 'fetch_profile_failed'}},
     multi=True
 )
