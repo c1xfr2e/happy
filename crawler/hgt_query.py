@@ -4,7 +4,7 @@ import requests
 import re
 import time
 from datetime import datetime
-
+import logging
 
 def fetch_hgt():
     eastmoney_data_url = 'http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=DPAB&sty=AHTZJL'
@@ -22,6 +22,10 @@ def fetch_hgt():
 
 while True:
     now = datetime.now()
-    hgt = fetch_hgt()
-    print datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), hgt[0], hgt[1]
-    time.sleep(30)
+    try:
+        hgt = fetch_hgt()
+        print datetime.strftime(now, '%Y-%m-%d %H:%M:%S'), hgt[0], hgt[1]
+        time.sleep(30)
+    except Exception as e:
+        logging.warning(e)
+
