@@ -2,7 +2,7 @@
 
 import logging
 from config import log_format
-from crawler.stock_deatil import fetch_stock_profile
+from crawler.eastmoney.stock_profile import fetch_stock_profile
 from db.mongo import client
 
 logging.basicConfig(format=log_format)
