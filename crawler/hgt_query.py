@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 import logging
 
+
 def fetch_hgt():
     eastmoney_data_url = 'http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=DPAB&sty=AHTZJL'
     r = requests.get(eastmoney_data_url)
