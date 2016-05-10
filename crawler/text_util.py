@@ -15,7 +15,7 @@ def text_to_number(text):
             '3215万' --> 3215 * 10000
             '18.6%' --> 0.186
     """
-    if not text:
+    if not text or len(text) < 2:
         return 0
     unit = text_number_unit.get(text[-1])
     if unit:
