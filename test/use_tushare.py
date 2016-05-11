@@ -2,11 +2,19 @@
 
 import tushare as ts
 
-code = '300059'
+code = '000001'
+'''
+df_quotes = ts.get_hist_data(code, start='2000-01-01', ktype='D')
+indices = df_quotes.index
+for i in indices:
+    print i
+'''
 
-# 股票历史行情
-all_quotes = ts.get_hist_data(code, start='2016-04-15', ktype='D')
-print all_quotes
-# 前复权日线数据
-fuquan_quotes = ts.get_h_data(code, start='2016-04-15')
-print all_quotes
+fuquan_quotes = ts.get_h_data(code, start='2016-04-15', index=True)
+print fuquan_quotes
+for i in fuquan_quotes.index:
+    row = fuquan_quotes.loc[i]
+    print row, type(row)
+
+current = fuquan_quotes.loc['2016-05-11']
+print current

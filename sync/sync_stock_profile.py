@@ -18,7 +18,7 @@ def sync_stock_profiles():
         try:
             stock_profile = fetch_stock_profile(code)
         except Exception as e:
-            logging.warning('%s: %s'%(code, e))
+            logging.warning('%s: %s' % (code, e))
             failed_codes.append(code)
             continue
 
@@ -28,7 +28,7 @@ def sync_stock_profiles():
             stock_profile,
             upsert=True
         )
-        logging.info('%s: %s'%(code, result))
+        logging.info('%s: %s' % (code, result))
         client.alchemist.stock_codes.update(
             {'code': code},
             {'$set': {'status': 'fetch_profile_succeed'}}
