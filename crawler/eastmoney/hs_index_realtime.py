@@ -10,7 +10,7 @@ Fetch current index quotes at eastmoney.com:
     上证50  SSE 50 Index (000016.SS)         http://quote.eastmoney.com/zs000016.html
     中证500 CSI 500 Index (000905.SS)        http://quote.eastmoney.com/zs000905.html
 
-HTML element structure sample for http://quote.eastmoney.com/zs000001.html:
+HTML element section for 000001.SS is as below.
 
 <div class="qphox layout mb7">
     <div class="fl xt1 data-left">
@@ -47,33 +47,65 @@ HTML element structure sample for http://quote.eastmoney.com/zs000001.html:
     </div>
 </div>
 
-Data interface:
-    上证指数: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0000011
-    沪深300: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0003001
-    深圳成指: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990012
-    创业板:  http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990062
+But all the real data is filled by javascript functions.
+The javascript code is at: http://hqres.eastmoney.com/EM15AGIndex/js/quote-min.js
 
-    板块信息: http://data.eastmoney.com/bkzj/rank/hy/alljson.html
+Data interface for index quote data:
+
+    000001: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0000011
+    000300: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0003001
+    399001: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990012
+    399006: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990062
+
+And what they return is like:
+
+    callback({
+        "Comment": [],
+        "Value": ["1","000001","上证指数","3120.74","2553.33","2835.86","10.33","-1.18",
+                  "2812.11","-0.04","2839.28","136337656","2781.24","33285","2837.04",
+                  "1408亿","43.88","0.49","-","68315461","68022195","0.00","0","0.00",
+                  "1","20794444719483","28187506136335","0|0|0|0|0","0|0|0|0|0",
+                  "2016-05-12 15:21:10","2.05","-","-"]
+    })
+
+See the function 'DisQuote' in the above javascript code to guess what's this!
 
 """
 
+import re
+import json
 import requests
-from bs4 import BeautifulSoup
+
+
+index_url = {
+    '000001': 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0000011',
+    '000300': 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0003001',
+    '399001': 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990012',
+    '399006': 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990062'
+}
 
 
 def fetch_index_profile(index_code):
-    url = 'http://quote.eastmoney.com/zs{code}.html'.format(code=index_code)
+    url = index_url.get(index_code)
+    if not url:
+        return None
     resp = requests.get(url)
-    print resp.encoding
-    soup = BeautifulSoup(resp.content)
-    root = soup.find('div', class_='qphox layout mb7')
+    usefull_text = re.findall('callback\((.*)\)', resp.content)[0]
+    obj = json.loads(usefull_text)
+    values = obj['Value']
 
-    price = root.find(id='price9').text
-    change_value = root.find(id='km1').text
-    change_percent = root.find(id='km2').text
-    high = root.find(id='gt2').parent.text
-    low = root.find(id='gt8').parent.text
-    turnover = root.find(id='gt4').parent.text
-    amount_money = root.find(id='gt11').parent.text
+    current_price = values[25]
+    changed_value = values[27]
+    changed_percent = values[29]
 
-    print price, change_value, change_percent, high, low, turnover, amount_money
+    pre_close = values[34]
+    open = values[28]
+    high = values[30]
+    low = values[32]
+
+    turnover = values[37]
+    volume = values[31]
+    amount_money = values[35]
+    time = values[49]
+
+    print current_price, changed_value, changed_percent, high, low, turnover, amount_money
