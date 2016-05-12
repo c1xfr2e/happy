@@ -48,8 +48,12 @@ HTML element structure sample for http://quote.eastmoney.com/zs000001.html:
 </div>
 
 Data interface:
-    http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0000011
-    http://data.eastmoney.com/bkzj/rank/hy/alljson.html
+    上证指数: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0000011
+    沪深300: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=0003001
+    深圳成指: http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990012
+    创业板:  http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id=3990062
+
+    板块信息: http://data.eastmoney.com/bkzj/rank/hy/alljson.html
 
 """
 
