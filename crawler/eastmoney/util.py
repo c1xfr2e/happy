@@ -22,3 +22,7 @@ def text_to_number(text):
         return float(text[0:-1]) * unit
     else:
         return float(text)
+
+
+def stock_market(code):
+    return 'sh' if code[0] == '6' else 'sz'

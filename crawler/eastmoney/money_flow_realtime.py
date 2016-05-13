@@ -6,7 +6,8 @@
 
 import requests
 
-url = 'http://s1.dfcfw.com/js/600597.js?rt=0.1290373884996685'
+index_url = 'http://s1.dfcfw.com/js/zs000001.js?rt=0.20552931982704514'
+stock_url = 'http://s1.dfcfw.com/js/000001.js?rt=0.17464548470180996'
 
 
 def fetch_realtime_money_flow(code):
