@@ -11,10 +11,13 @@ text_number_unit = {
 def text_to_number(text):
     """
         Convert text to number:
-            '21.62亿' --> 21.62 * 100000000
-            '3215万' --> 3215 * 10000
+            '21.62亿' --> 21.62 * 10^8
+            '3215万' --> 3215 * 10^5
             '18.6%' --> 0.186
     """
+
+    # TODO: Check regex match numbers: \-?[0-9]*(\.[0-9]*)?
+
     if not text or len(text) < 2:
         return 0
     unit = text_number_unit.get(text[-1])
