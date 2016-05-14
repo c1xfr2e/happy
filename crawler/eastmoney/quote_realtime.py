@@ -118,7 +118,41 @@ from collections import OrderedDict
 import re
 import json
 import requests
+import logging
+from marshmallow import Schema, fields
+
 from util import stock_market
+from util import text_to_number
+
+from config import log_format
+logging.basicConfig(format=log_format)
+
+
+class QuoteData(Schema):
+    class Meta:
+        ordered = True
+
+    code = fields.DateTime()
+    name = fields.String()
+    current_price = fields.Decimal(places=2)
+    average_price = fields.Decimal(places=2)
+    change = fields.Decimal(places=2)
+    change_percent = fields.Decimal(places=2)
+    open = fields.Decimal(places=2)
+    high = fields.Decimal(places=2)
+    low = fields.Decimal(places=2)
+    pre_close = fields.Decimal(places=2)
+    volume_size = fields.Integer()
+    volume_amount = fields.Method(deserialize='number_with_chinese')
+    turnover_rate = fields.Decimal(places=2)
+    minute_volume_ratio = fields.Decimal(places=2)
+    bid_ask_ratio = fields.Decimal(places=2)
+    bid_ask_diff = fields.Integer()
+    update_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+
+    def number_with_chinese(self, value):
+        return int(text_to_number(value))
+
 
 """
 code: stock or index code
@@ -137,10 +171,13 @@ def fetch_stock_quote(code):
     url = quote_url.format(code=code, market=market_code)
 
     resp = requests.get(url)
-    data_text = re.findall('callback\((.*)\)', resp.content)[0]
-    data = json.loads(data_text)
-    values = data['Value']
 
+    groups = re.findall('callback\((.*)\)', resp.content)
+    if not groups:
+        return None
+
+    data = json.loads(groups[0])
+    values = data['Value']
     keys = [
         "market_code",  # [0] 1:上海 2:深圳
         "code",  # [1]
@@ -155,7 +192,7 @@ def fetch_stock_quote(code):
         "average_price",  # [26] 均价
         "change",  # [27] 涨跌值
         "open",  # [28] 开盘价
-        "change_ratio",  # [29] 涨跌比例
+        "change_percent",  # [29] 涨跌比例
         "high",  # [30] 最高价
         "volume_size",  # [31] 成交手数
         "low",  # [32] 最低价
@@ -175,11 +212,18 @@ def fetch_stock_quote(code):
         "total_market_value",  # [46] 总市值
         "_",  # [47]
         "_",  # [48]
-        "datetime",  # [49]
+        "update_time",  # [49]
         "_",  # [50]
         "_",
         "_"
     ]
 
-    quote = OrderedDict(zip(keys, values))
-    return quote
+    kvs = dict(zip(keys, values))
+    quote_data = QuoteData()
+    result = quote_data.load(kvs)
+
+    if result.errors:
+        msg = '[%s] %s' % (code, result.errors)
+        logging.error(msg)
+
+    return result.data
