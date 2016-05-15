@@ -162,11 +162,17 @@ Sample:
 quote_url = 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id={code}{market}'
 
 
-def fetch_stock_quote(code):
-    market = stock_market(code)
-    market_code = '1' if market == 'sh' else '2'
-    url = quote_url.format(code=code, market=market_code)
+def fetch_index_quote(code):
+    market = 'sh' if code in ['000001', '000300'] else 'sz'
+    return fetch_stock_quote(code, market=market)
 
+
+def fetch_stock_quote(code, market=None):
+    if market is None:
+        market = stock_market(code)
+    market_code = '1' if market == 'sh' else '2'
+
+    url = quote_url.format(code=code, market=market_code)
     resp = requests.get(url)
 
     groups = re.findall('callback\((.*)\)', resp.content)
