@@ -1,8 +1,6 @@
 # coding: utf-8
 
-import decimal
 from marshmallow import fields
-from marshmallow.exceptions import ValidationError
 from util import cntext_to_int, cntext_to_float
 
 

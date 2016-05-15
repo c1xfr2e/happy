@@ -123,7 +123,6 @@ from marshmallow import Schema, fields
 
 from config import log_format
 from crawler.util import stock_market
-from crawler.util import cntext_to_number
 from .. import extfields
 
 logging.basicConfig(format=log_format)
