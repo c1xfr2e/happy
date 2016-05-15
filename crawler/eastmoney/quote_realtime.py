@@ -114,17 +114,18 @@ Sample of 'Value' list:
 
 """
 
-from collections import OrderedDict
-import re
 import json
-import requests
 import logging
+import re
+
+import requests
 from marshmallow import Schema, fields
 
-from util import stock_market
-from util import text_to_number
-
 from config import log_format
+from crawler.util import stock_market
+from crawler.util import cntext_to_number
+from .. import extfields
+
 logging.basicConfig(format=log_format)
 
 
@@ -132,7 +133,7 @@ class QuoteData(Schema):
     class Meta:
         ordered = True
 
-    code = fields.DateTime()
+    code = fields.String()
     name = fields.String()
     current_price = fields.Decimal(places=2)
     average_price = fields.Decimal(places=2)
@@ -143,15 +144,12 @@ class QuoteData(Schema):
     low = fields.Decimal(places=2)
     pre_close = fields.Decimal(places=2)
     volume_size = fields.Integer()
-    volume_amount = fields.Method(deserialize='number_with_chinese')
+    volume_amount = extfields.CnNumberInt()
     turnover_rate = fields.Decimal(places=2)
     minute_volume_ratio = fields.Decimal(places=2)
     bid_ask_ratio = fields.Decimal(places=2)
     bid_ask_diff = fields.Integer()
     update_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
-
-    def number_with_chinese(self, value):
-        return int(text_to_number(value))
 
 
 """
@@ -219,9 +217,9 @@ def fetch_stock_quote(code):
     ]
 
     kvs = dict(zip(keys, values))
+
     quote_data = QuoteData()
     result = quote_data.load(kvs)
-
     if result.errors:
         msg = '[%s] %s' % (code, result.errors)
         logging.error(msg)

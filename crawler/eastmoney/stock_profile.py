@@ -2,8 +2,8 @@
 
 import requests
 from bs4 import BeautifulSoup
-from text_util import text_to_number
 from datetime import datetime
+from ..util import cntext_to_number
 
 
 '''
@@ -64,15 +64,15 @@ def fetch_stock_profile(stock_code):
     except:
         pe = 0
     net_asset_value_per_share = float(datas.get(u'净资产', u'0'))
-    pb = text_to_number(datas.get(u'净利率', u'0'))
-    revenue = text_to_number(datas.get(u'收入', u'0'))
-    revenue_growth = text_to_number(texts[5][1])
-    net_income = text_to_number(datas.get(u'净利润', u'0'))
-    net_income_growth = text_to_number(texts[7][1])
-    roe = text_to_number(datas.get(u'ROE', u'0.0'))
-    shares_total = text_to_number(datas.get(u'总股本', u'0'))
-    shares_outstanding = text_to_number(datas.get(u'流通股', u'0'))
-    retained_earnings_per_share = text_to_number(datas.get(u'每股未分配利润', u'0'))
+    pb = cntext_to_number(datas.get(u'净利率', u'0'))
+    revenue = cntext_to_number(datas.get(u'收入', u'0'))
+    revenue_growth = cntext_to_number(texts[5][1])
+    net_income = cntext_to_number(datas.get(u'净利润', u'0'))
+    net_income_growth = cntext_to_number(texts[7][1])
+    roe = cntext_to_number(datas.get(u'ROE', u'0.0'))
+    shares_total = cntext_to_number(datas.get(u'总股本', u'0'))
+    shares_outstanding = cntext_to_number(datas.get(u'流通股', u'0'))
+    retained_earnings_per_share = cntext_to_number(datas.get(u'每股未分配利润', u'0'))
     listing_date_str = datas.get(u'上市时间')
 
     listing_date = datetime.strptime(listing_date_str, '%Y-%m-%d').date()
