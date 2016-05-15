@@ -2,14 +2,17 @@
 
 from flask import Flask
 from flask.ext.script import Manager, Shell
+from crawler.eastmoney.quote_realtime import fetch_index_quote
 
 app = Flask(__name__)
 manager = Manager(app)
 
 
-@app.route('/')
+@app.route('/sync_index')
 def index():
-    return '<h1>Run! Now!</h1>'
+    hq = fetch_index_quote('000001')
+    print hq
+    return ''
 
 
 @manager.shell
