@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import absolute_import
 
 from flask import Flask
 from flask.ext.script import Manager, Shell
