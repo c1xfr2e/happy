@@ -19,7 +19,7 @@ class HqSnapshot(Schema):
     name = fields.String()
     price = fields.Decimal(places=2)
     volume = fields.Integer()
-    volume_money = fields.Integer()
+    volume_money = fields.Decimal(places=2)
     pre_close = fields.Decimal(places=2)
     open = fields.Decimal(places=2)
     low = fields.Decimal(places=2)
@@ -84,4 +84,4 @@ def hq_snapshot(market, code):
 
 
 if __name__ == '__main__':
-    hq_snapshot('sz', '399006')
+    hq_snapshot('sz', '399102')
