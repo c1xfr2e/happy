@@ -3,6 +3,7 @@
 import requests
 import re
 from collections import OrderedDict
+from decimal import Decimal
 from marshmallow import Schema, fields
 
 import logging
@@ -80,8 +81,14 @@ def hq_snapshot(market, code):
         msg = '[%s] %s' % (code, result.errors)
         logging.error(msg)
 
+    pre_close = result.data['pre_close']
+    price = result.data['price']
+    exp_two_places = Decimal((0, (1,), -2))  # Decimal(10) ** -2
+    change_percent = Decimal((price-pre_close)/pre_close * 100).quantize(exp_two_places)
+    print change_percent
+
     return result.data
 
 
 if __name__ == '__main__':
-    hq_snapshot('sz', '399102')
+    hq_snapshot('sh', '000001')
