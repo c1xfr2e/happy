@@ -2,23 +2,45 @@
 
 import requests
 import re
-import time
 from collections import OrderedDict
+from marshmallow import Schema, fields
+
+import logging
+from config import log_format
+logging.basicConfig(format=log_format)
 
 url_format = 'http://hq.sinajs.cn/list={market}{code}'
 
 
-def hq_lastest(market, code):
+class HqSnapshot(Schema):
+    class Meta:
+        ordered = True
+
+    name = fields.String()
+    price = fields.Decimal(places=2)
+    volume = fields.Integer()
+    volume_money = fields.Integer()
+    pre_close = fields.Decimal(places=2)
+    open = fields.Decimal(places=2)
+    low = fields.Decimal(places=2)
+    high = fields.Decimal(places=2)
+    bid = fields.Decimal(places=2)
+    ask = fields.Decimal(places=2)
+    date = fields.Date(format='%Y-%m-%d')
+    time = fields.Time(format='%H:%M:%S')
+
+
+def hq_snapshot(market, code):
     keys = [
         'name',
-        'open_price',
-        'pre_close_price',
-        'latest_price',
-        'high_price',
-        'low_price',
-        'bid_price',
-        'ask_price',
-        'volume_shares',
+        'open',
+        'pre_close',
+        'price',
+        'high',
+        'low',
+        'bid',
+        'ask',
+        'volume',
         'volume_money',
         'bid_1_count',
         'bid_1_price',
@@ -49,11 +71,17 @@ def hq_lastest(market, code):
     resp = requests.get(url)
     content = resp.content.decode('gbk')
     data_text = re.findall('"(.*)"', content)[0]
-    datas = data_text.split(',')
-    kv = OrderedDict(zip(keys, datas))
-    for k, v in kv.iteritems():
-        print k, v
+    data_list = data_text.split(',')
+    kvs = OrderedDict(zip(keys, data_list))
+
+    schema = HqSnapshot()
+    result = schema.load(kvs)
+    if result.errors:
+        msg = '[%s] %s' % (code, result.errors)
+        logging.error(msg)
+
+    return result.data
 
 
 if __name__ == '__main__':
-    hq_lastest('sz', '399006')
+    hq_snapshot('sz', '399006')
