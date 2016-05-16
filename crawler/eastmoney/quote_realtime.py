@@ -134,7 +134,7 @@ class QuoteData(Schema):
 
     code = fields.String()
     name = fields.String()
-    current_price = fields.Decimal(places=2)
+    latest_price = fields.Decimal(places=2)
     average_price = fields.Decimal(places=2)
     change = fields.Decimal(places=2)
     change_percent = fields.Decimal(places=2)
@@ -163,7 +163,7 @@ quote_url = 'http://nuff.eastmoney.com/EM_Finance2015TradeInterface/JS.ashx?id={
 
 
 def fetch_index_quote(code):
-    market = 'sh' if code in ['000001', '000300'] else 'sz'
+    market = 'sz' if code in ['399001', '399006'] else 'sh'
     return fetch_stock_quote(code, market=market)
 
 
@@ -187,11 +187,11 @@ def fetch_stock_quote(code, market=None):
         "name",  # [2]
         "bid_1_price", "bid_2_price", "bid_3_price", "bid_4_price", "bid_5_price",  # [3,7] 买一至买五
         "ask_1_price", "ask_2_price", "ask_3_price", "ask_4_price", "ask_5_price",  # [8,12] 卖一至卖五
-        "bid_1_size","bid_2_size","bid_3_size","bid_4_size","bid_5_size",  # [13,17] 买一至买五挂单数
-        "ask_1_size","ask_2_size","ask_3_size","ask_4_size","ask_5_size",  # [18,22] 卖一至卖五挂单数
+        "bid_1_size", "bid_2_size", "bid_3_size", "bid_4_size", "bid_5_size",  # [13,17] 买一至买五挂单数
+        "ask_1_size", "ask_2_size", "ask_3_size", "ask_4_size", "ask_5_size",  # [18,22] 卖一至卖五挂单数
         "limit_up_price",  # [23] 涨停价
         "limit_down_price",  # [24] 跌停价
-        "current_price",  # [25] 最新
+        "latest_price",  # [25] 最新
         "average_price",  # [26] 均价
         "change",  # [27] 涨跌值
         "open",  # [28] 开盘价
