@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from flask import Flask
 from flask.ext.script import Manager, Shell
-from crawler.eastmoney.quote_realtime import fetch_index_quote
+from crawler.eastmoney.quote_realtime import fetch_index_quote, fetch_stock_quote
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -11,8 +11,9 @@ manager = Manager(app)
 
 @app.route('/sync_index')
 def index():
-    hq = fetch_index_quote('000001')
-    print hq
+    hq = fetch_stock_quote('300291')
+    for k, v in hq.iteritems():
+        print k, v
     return ''
 
 

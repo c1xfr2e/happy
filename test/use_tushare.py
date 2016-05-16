@@ -10,7 +10,7 @@ for i in indices:
     print i
 '''
 
-totol_all = ts.get_today_all()
+totol_all = ts.get_realtime_quotes('300342')
 
 for i in totol_all.index:
     row = totol_all.loc[i]
