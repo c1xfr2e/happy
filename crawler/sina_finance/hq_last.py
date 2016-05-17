@@ -13,7 +13,7 @@ logging.basicConfig(format=log_format)
 url_format = 'http://hq.sinajs.cn/list={market}{code}'
 
 
-class HqSnapshot(Schema):
+class HQSchema(Schema):
     class Meta:
         ordered = True
 
@@ -31,7 +31,7 @@ class HqSnapshot(Schema):
     time = fields.Time(format='%H:%M:%S')
 
 
-def hq_snapshot(market, code):
+def hq_last(market, code):
     keys = [
         'name',
         'open',
@@ -75,7 +75,7 @@ def hq_snapshot(market, code):
     data_list = data_text.split(',')
     kvs = OrderedDict(zip(keys, data_list))
 
-    schema = HqSnapshot()
+    schema = HQSchema()
     result = schema.load(kvs)
     if result.errors:
         msg = '[%s] %s' % (code, result.errors)
@@ -85,4 +85,4 @@ def hq_snapshot(market, code):
 
 
 if __name__ == '__main__':
-    hq_snapshot('sh', '000001')
+    hq_last('sh', '000001')
