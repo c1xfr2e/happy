@@ -5,6 +5,7 @@ from flask import Flask
 from flask.ext.script import Manager, Shell
 from crawler.eastmoney.quote_realtime import fetch_index_quote, fetch_stock_quote
 from crawler.sina_finance.hq import hq_snapshot
+# from crawler.tjqka
 
 app = Flask(__name__)
 manager = Manager(app)
