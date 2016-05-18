@@ -15,16 +15,6 @@ user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) ' \
 index_hq_url = 'http://d.10jqka.com.cn/v2/realhead/zs_{code}/last.js'
 stock_url = 'http://d.10jqka.com.cn/v2/realhead/{market}_{code}/last.js'
 
-market_id = {
-    'sh': 16,
-    'sz': 32
-}
-
-index_code_map = {
-    '000001': '1A0001',
-    '000300': '1B0300'
-}
-
 
 class HQSchema(Schema):
     class Meta:
