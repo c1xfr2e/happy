@@ -60,7 +60,7 @@ def hq_last(code, index=False):
 
 
 if __name__ == '__main__':
-    result = hq_last('300342')
+    result = hq_last('399006', index=True)
     for k,v in result.iteritems():
         print k, v
     # result = hq_last('1A0001')

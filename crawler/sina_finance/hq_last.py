@@ -85,4 +85,4 @@ def hq_last(market, code):
 
 
 if __name__ == '__main__':
-    hq_last('sh', '000001')
+    print hq_last('sh', '000001')

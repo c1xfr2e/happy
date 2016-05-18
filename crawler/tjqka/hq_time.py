@@ -3,6 +3,7 @@
 import requests
 import json
 from decimal import Decimal
+from collections import OrderedDict
 from marshmallow import Schema, fields
 from crawler.util import stock_market
 from const import market_of_index, tjqka_market_id
@@ -21,15 +22,15 @@ class HQTime(Schema):
 
     def parse_hq_time(self, value):
         time_hq_text = value.split(';')
-        hqs = {
-            datas[0]: {
+        hqs = OrderedDict()
+        for text in time_hq_text:
+            datas = text.split(',')
+            hqs[datas[0]] = {
                 'price': Decimal(datas[1]),
                 'volume_money': Decimal(datas[2]),
                 'average': Decimal(datas[3]),
                 'volume': Decimal(datas[4])
             }
-            for datas in [text.split(',') for text in time_hq_text]
-        }
         return hqs
 
 
@@ -54,6 +55,11 @@ def hq_last(code, index=False):
 
 
 if __name__ == '__main__':
-    hq = hq_last('399006', index=True)
-    for k,v in hq.iteritems():
+    hq_time = hq_last('399006', index=True)
+    volume = Decimal(0)
+    volume_money = Decimal(0)
+    for k, v in hq_time['hq'].iteritems():
         print k, v
+        volume += v['volume']
+        volume_money += v['volume_money']
+    print volume, volume_money
