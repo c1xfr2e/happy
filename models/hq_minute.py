@@ -11,7 +11,7 @@ class HQMinute(Base):
     date = Column(Date, primary_key=True)
     time = Column(Time, primary_key=True)
 
-    change = Column(Numeric(precision=10, scale=2), nullable=False)
+    price = Column(Numeric(precision=10, scale=2), nullable=False)
     volume = Column(BigInteger, nullable=False)
     volume_money = Column(BigInteger, nullable=False)
 
