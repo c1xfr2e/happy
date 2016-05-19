@@ -1,23 +1,24 @@
 # coding: utf8
 
+import pickle
 import tushare as ts
 
 code = '000001'
-'''
-df_quotes = ts.get_hist_data(code, start='2000-01-01', ktype='D')
+
+df_quotes = ts.get_hist_data('sh', start='2010-01-01', ktype='D')
+pickle.dump(df_quotes, open('000001.SSE', 'wb'))
+print df_quotes
 indices = df_quotes.index
-for i in indices:
-    print i
 
+'''
 totol_all = ts.get_realtime_quotes('300342')
-
 for i in totol_all.index:
     row = totol_all.loc[i]
     print row
 '''
 
-cyb = '399006'
-fuquan_quotes = ts.get_h_data('000848', start='2016-05-11', index=False, autype=None)
+
+fuquan_quotes = ts.get_h_data('000001', start='2010-01-01', index=True, autype=None)
 print fuquan_quotes
 # for i in fuquan_quotes.index:
 #    row = fuquan_quotes.loc[i]
