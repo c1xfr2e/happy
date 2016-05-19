@@ -15,8 +15,8 @@ app = Flask(__name__)
 manager = Manager(app)
 
 
-@app.route('/sync_hq_minute')
-def sync_hq_minute():
+@app.route('/synchq/<code>')
+def sync_hq(code):
     code = '399006'
 
 
