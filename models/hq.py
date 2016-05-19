@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from sqlalchemy import Column, String, DateTime, Numeric, BigInteger, UniqueConstraint
+from sqlalchemy import Column, String, DateTime, Numeric, BigInteger
 from . import Base
 
 
@@ -8,6 +8,7 @@ class HQ(Base):
     __tablename__ = 'hq'
 
     code = Column(String(10), primary_key=True)
+    market = Column(String(16), primary_key=True)
     datetime_from = Column(DateTime, primary_key=True)
     datetime_to = Column(DateTime, primary_key=True)
     period = Column(String(16), nullable=False)
@@ -20,9 +21,9 @@ class HQ(Base):
     high = Column(Numeric(precision=10, scale=2), nullable=False)
 
     change = Column(Numeric(precision=10, scale=2))
-    change_percent = Column(Numeric(precision=5, scale=2))
+    change_percent = Column(Numeric(precision=8, scale=2))
 
     volume = Column(BigInteger, nullable=False)
     money = Column(BigInteger, nullable=False)
 
-    turnover = Column(Numeric(precision=5, scale=2))
+    turnover = Column(Numeric(precision=8, scale=2))
