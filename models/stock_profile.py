@@ -9,7 +9,7 @@ class StockProfile(Base):
 
     __tablename__ = 'stock_profile'
 
-    ticker = Column(String(6), primary_key=True)
+    code = Column(String(10), primary_key=True)
     pinyin = Column(String(16))
 
     short_name = Column(String(16), nullable=False, unique=True)
