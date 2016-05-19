@@ -14,16 +14,16 @@ class HQ(Base):
     period = Column(String(16), nullable=False)
     name = Column(String(16))
 
-    pre_close = Column(Numeric(precision=10, scale=2), nullable=False)
-    open = Column(Numeric(precision=10, scale=2), nullable=False)
-    close = Column(Numeric(precision=10, scale=2), nullable=False)
-    low = Column(Numeric(precision=10, scale=2), nullable=False)
-    high = Column(Numeric(precision=10, scale=2), nullable=False)
+    pre_close = Column(Numeric(precision=10, scale=3), nullable=False)
+    open = Column(Numeric(precision=10, scale=3), nullable=False)
+    close = Column(Numeric(precision=10, scale=3), nullable=False)
+    low = Column(Numeric(precision=10, scale=3), nullable=False)
+    high = Column(Numeric(precision=10, scale=3), nullable=False)
 
-    change = Column(Numeric(precision=10, scale=2))
-    change_percent = Column(Numeric(precision=8, scale=2))
+    change = Column(Numeric(precision=10, scale=3))
+    change_percent = Column(Numeric(precision=8, scale=3))
 
     volume = Column(BigInteger, nullable=False)
-    money = Column(BigInteger, nullable=False)
+    amount = Column(BigInteger, nullable=False)
 
     turnover = Column(Numeric(precision=8, scale=2))
