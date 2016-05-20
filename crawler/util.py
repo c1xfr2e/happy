@@ -45,6 +45,11 @@ def stock_market(code):
     return 'sh' if code[0] == '6' else 'sz'
 
 
+def index_market(code):
+    from const import index_market
+    return index_market.get(code)
+
+
 if __name__ == '__main__':
     n = cntext_to_number('21.62亿'.decode('utf8'))
     assert n == int(21.62 * 10**8)

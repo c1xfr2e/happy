@@ -85,4 +85,6 @@ def hq_last(market, code):
 
 
 if __name__ == '__main__':
-    print hq_last('sh', '000001')
+    hq = hq_last('sz', '300342')
+    for k, v in hq.iteritems():
+        print k, v

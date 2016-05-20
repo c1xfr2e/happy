@@ -123,7 +123,7 @@ from marshmallow import Schema, fields
 
 from config import log_format
 from crawler.util import stock_market
-from .. import extfields
+from crawler import extfields
 
 logging.basicConfig(format=log_format)
 
@@ -230,3 +230,8 @@ def fetch_stock_quote(code, market=None):
         logging.error(msg)
 
     return result.data
+
+if __name__ == '__main__':
+    hq = fetch_stock_quote('300342')
+    for k, v in hq.iteritems():
+        print k, v
