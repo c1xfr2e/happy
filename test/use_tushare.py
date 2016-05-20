@@ -1,12 +1,10 @@
 # coding: utf8
 
-import pickle
 import tushare as ts
 
 code = '000001'
 
 df_quotes = ts.get_hist_data('sh', start='2010-01-01', ktype='D')
-pickle.dump(df_quotes, open('000001.SSE', 'wb'))
 print df_quotes
 indices = df_quotes.index
 
