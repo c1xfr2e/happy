@@ -4,13 +4,12 @@ from datetime import date, datetime, time, timedelta
 import pickle
 import logging
 import tushare as ts
-from crawler.const import index_market
 from models import Session, HQ, HSIndex
 from indicator.basic import change_percent
 
 
 def pull_history_hq_of_index(index):
-    hqs = ts.get_h_data(index.code, start=index.listing_date, index=True, autype='')
+    hqs = ts.get_h_data(index.code, start=str(index.listing_date), index=True, autype='')
     # pickle.dump(hqs, open('../data/399006.hq', 'wb'))
     #hqs = pickle.load(open('../data/399006.hq', 'rb'))
     iterator = reversed(hqs.index)
@@ -41,7 +40,7 @@ def pull_history_hq_of_index(index):
             from_time=time(hour=9, minute=15),
             to_time=time(hour=15),
             period='day_1',
-            name=index.name,
+            name=index.short_name,
             open=open_price,
             close=close,
             low=low,
@@ -57,7 +56,7 @@ def pull_history_hq_of_index(index):
 
         pre_close = close
 
-        logging.info('HQ: ' + from_date)
+        logging.info('HQ: ' + str(from_date))
 
     sess.commit()
     logging.info('db session commited')
