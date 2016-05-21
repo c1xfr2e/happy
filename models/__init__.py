@@ -24,6 +24,7 @@ from security_exchange import SecurityExchange
 from stock_profile import StockProfile
 from hq import HQ
 from hq_snapshot import HQSnapshot
+from hs_index import HSIndex
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)

@@ -11,3 +11,4 @@ class SecurityExchange(Base):
     code = Column(String(10))
     alias_code = Column(String(10))
     name = Column(String(16))
+
