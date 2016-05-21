@@ -9,8 +9,8 @@ class HQ(Base):
 
     market = Column(String(16), primary_key=True)
     code = Column(String(10), primary_key=True)
-    datetime_from = Column(DateTime, primary_key=True)
-    datetime_to = Column(DateTime, primary_key=True)
+    from_datetime = Column(DateTime, primary_key=True)
+    to_datetime = Column(DateTime, primary_key=True)
 
     period = Column(String(16), nullable=False)
     name = Column(String(16))
