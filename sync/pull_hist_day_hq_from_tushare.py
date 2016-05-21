@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pickle
 import tushare as ts
 from crawler.const import index_market
@@ -19,10 +19,19 @@ def pull_index_day_hq_from_2000(code):
     first_index = next(iterator)
     first_day_hq = hqs.loc[first_index]
     pre_close = first_day_hq['open']
-    for i in reversed(hqs.index):
-        row = hqs.loc[i]
-        print row['open'], row['close']
-
+    for timestamp in reversed(hqs.index):
+        dt = timestamp.to_datetime()
+        from_datetime = datetime(dt.year, dt.month, dt.day)
+        to_datetime = from_datetime + timedelta(days=1)
+        row = hqs.loc[timestamp]
+        open = row['open']
+        close = row['close']
+        low = row['row']
+        high = row['high']
+        volume = row['volume']
+        amount = row['amount']
+        change = close - pre_close
+        percent = change_percent(close, pre_close)
 
     pre_close = 0
     change = 0
@@ -35,9 +44,9 @@ def pull_index_day_hq_from_2000(code):
     hq_day = HQ(
         market=market,
         code=code,
-        from_dt=start_datetime,
-        to_dt=end_datetime,
-        period='day',
+        from_datetime=start_datetime,
+        to_datetime=end_datetime,
+        period='day_1',
         name='',
         open=hq['open'],
         close=hq['close'],
