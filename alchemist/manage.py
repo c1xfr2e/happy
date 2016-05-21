@@ -35,7 +35,7 @@ def index():
         this_minute = time(now.hour, now.minute, 0)
 
         change = hq['price'] - hq['pre_close']
-        change_pct = change_percent(hq['pre_close'], hq['price'])
+        change_pct = change_percent( hq['price'], hq['pre_close'])
 
         snapshot = HQSnapshot(
             market=market,
