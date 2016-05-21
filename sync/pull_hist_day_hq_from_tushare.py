@@ -2,6 +2,7 @@
 
 from datetime import date, datetime, time, timedelta
 import pickle
+import logging
 import tushare as ts
 from crawler.const import index_market
 from models import Session, HQ, HSIndex
@@ -56,10 +57,14 @@ def pull_history_hq_of_index(index):
 
         pre_close = close
 
+        logging.info('HQ: ' + from_date)
+
     sess.commit()
+    logging.info('db session commited')
 
 
 if __name__ == '__main__':
+    logging.getLogger().setLevel(logging.INFO)
     s = Session()
     cyb_index = s.query(HSIndex).filter(HSIndex.code=='399006').first()
     print cyb_index
