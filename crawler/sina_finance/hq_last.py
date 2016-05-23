@@ -18,15 +18,15 @@ class HQSchema(Schema):
         ordered = True
 
     name = fields.String()
-    price = fields.Decimal(places=2)
+    price = fields.Decimal(places=3)
     volume = fields.Integer()
-    volume_money = fields.Decimal(places=2)
-    pre_close = fields.Decimal(places=2)
-    open = fields.Decimal(places=2)
-    low = fields.Decimal(places=2)
-    high = fields.Decimal(places=2)
-    bid = fields.Decimal(places=2)
-    ask = fields.Decimal(places=2)
+    amount = fields.Decimal(places=3)
+    pre_close = fields.Decimal(places=3)
+    open = fields.Decimal(places=3)
+    low = fields.Decimal(places=3)
+    high = fields.Decimal(places=3)
+    bid = fields.Decimal(places=3)
+    ask = fields.Decimal(places=3)
     date = fields.Date(format='%Y-%m-%d')
     time = fields.Time(format='%H:%M:%S')
 
@@ -42,7 +42,7 @@ def hq_last(market, code):
         'bid',
         'ask',
         'volume',
-        'volume_money',
+        'amount',
         'bid_1_count',
         'bid_1_price',
         'bid_2_count',

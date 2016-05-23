@@ -10,8 +10,6 @@ from indicator.basic import change_percent
 
 def pull_history_hq_of_index(index):
     hqs = ts.get_h_data(index.code, start=str(index.listing_date), index=True, autype='', pause=0.01)
-    # pickle.dump(hqs, open('../data/399006.hq', 'wb'))
-    #hqs = pickle.load(open('../data/399006.hq', 'rb'))
     iterator = reversed(hqs.index)
     first_index = next(iterator)
     first_day_hq = hqs.loc[first_index]
@@ -64,7 +62,7 @@ def pull_history_hq_of_index(index):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
-    index_to_pull = {'000001', '000300', '000003'}
+    index_to_pull = {'000016'}
     s = Session()
     for index in s.query(HSIndex).filter(HSIndex.code.in_(index_to_pull)).all():
         pull_history_hq_of_index(index)
