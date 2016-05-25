@@ -25,30 +25,8 @@ from stock_profile import StockProfile
 from hq import HQ
 from hq_snapshot import HQSnapshot
 from hs_index import HSIndex
+from stock import Stock
+from quote import Quote
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
-
-'''
-snapshot = HQSnapshot(
-    code='399006',
-    name=u'创业板指',
-    date='20160517',
-    time='15:00',
-    price=2022.38,
-    pre_close=2031.21,
-    open=2000.1,
-    low=1998,
-    high=2088.03,
-    volume=1000000,
-    volume_money=123456789
-)
-
-session = Session()
-session.add(snapshot)
-session.commit()
-
-hq_snapshots = session.query(HQSnapshot).filter(HQSnapshot.code=='399006').all()
-for hq in hq_snapshots:
-    print hq.name, hq.price
-'''
