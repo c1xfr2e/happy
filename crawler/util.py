@@ -4,7 +4,7 @@ from decimal import Decimal
 
 
 cn_number_unit = {
-    u'%': 0.01,
+    u'%': 1,
     u'元': 1,
     u'万': 10**4,
     u'亿': 10**8
@@ -28,7 +28,7 @@ def cntext_to_number(text):
         return Decimal(text)
 
     unit = cn_number_unit.get(text[-1])
-    return Decimal(text[0:-1]) * unit
+    return Decimal(text[0:-1]) * Decimal(unit)
 
 
 def cntext_to_int(text):
