@@ -27,6 +27,7 @@ class Stock(Base):
     net_profit_growth = Column(Numeric(precision=8, scale=2))
     asset_value_per_share = Column(Numeric(precision=8, scale=3))
     retained_earnings_per_share = Column(Numeric(precision=8, scale=3))
+    # debt_ratio = Column(Numeric(precision=8, scale=2))
 
     pe = Column(Numeric(precision=8, scale=2))
     pb = Column(Numeric(precision=8, scale=2))
