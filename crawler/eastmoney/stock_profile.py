@@ -1,10 +1,11 @@
 # coding: utf-8
 
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 from decimal import Decimal
+import requests
+from bs4 import BeautifulSoup
 from crawler.util import cntext_to_number, cntext_to_int
+from models import Stock
 
 
 '''
@@ -33,6 +34,13 @@ from crawler.util import cntext_to_number, cntext_to_int
 stock_page_url = 'http://quote.eastmoney.com/{market}{stock_code}.html'
 
 
+def value_or_zero(data, function, zero=0):
+    try:
+        return function(data)
+    except:
+        return zero
+
+
 def fetch_stock_profile(stock_code):
     market = 'sh' if stock_code.startswith('6') else 'sz'
     url = stock_page_url.format(market=market, stock_code=stock_code)
@@ -40,6 +48,20 @@ def fetch_stock_profile(stock_code):
     soup = BeautifulSoup(r.content.decode('gbk'))
 
     stock_name = soup.find('h2', id='name').text
+    status = 'L'
+    dead_status = [u'已退市', u'终止上市']
+    stop_status = [u'暂停上市']
+    if stock_name in dead_status:
+        status = 'DE'
+    elif stock_name in stop_status:
+        status = 'S'
+
+    '''
+        上市状态
+            上市: L
+            退市: DE
+    '''
+
 
     texts = []
     trs = soup.find('table', id='rtp2').find('tbody').find_all('tr')
@@ -49,9 +71,6 @@ def fetch_stock_profile(stock_code):
             texts.append(td.text.split(u'：'))
 
     datas = {_[0]: _[1] for _ in texts}
-
-    # for k, v in datas.iteritems():
-    #    print k, v
 
     eps = datas.get(u'收益(一)', None)
     if eps is None:
@@ -64,40 +83,52 @@ def fetch_stock_profile(stock_code):
         pe = Decimal(datas.get(u'PE(动)', 0))
     except:
         pe = 0
-    net_asset_value_per_share = Decimal(datas.get(u'净资产', u'0'))
-    pb = cntext_to_number(datas.get(u'净利率', u'0'))
-    revenue = cntext_to_int(datas.get(u'总收入', u'0'))
-    revenue_growth = cntext_to_number(texts[5][1])
-    net_income = cntext_to_number(datas.get(u'净利润', u'0'))
-    net_income_growth = cntext_to_number(texts[7][1])
-    roe = cntext_to_number(datas.get(u'ROE', u'0.0'))
-    shares_total = cntext_to_int(datas.get(u'总股本', u'0'))
-    shares_outstanding = cntext_to_int(datas.get(u'流通股', u'0'))
-    retained_earnings_per_share = cntext_to_number(datas.get(u'每股未分配利润', u'0'))
-    listing_date_str = datas.get(u'上市时间')
-    listing_date = datetime.strptime(listing_date_str, '%Y-%m-%d').date()
 
-    stock_profile = {
-        'code': stock_code,
-        'name': stock_name,
-        'eps': eps,
-        'pe': pe,
-        'net_asset_value_per_share': net_asset_value_per_share,
-        'pb': pb,
-        'revenue': int(revenue),
-        'revenue_growth': revenue_growth,
-        'net_income': int(net_income),
-        'net_income_growth': net_income_growth,
-        'roe': roe,
-        'shares_total': int(shares_total),
-        'shares_outstanding': int(shares_outstanding),
-        'retained_earnings_per_share': retained_earnings_per_share,
-        'listing_date': listing_date_str.replace('-', '')
-    }
+    asset_value_per_share = value_or_zero(datas.get(u'净资产'), Decimal)
+    pb = value_or_zero(datas.get(u'净利率'), cntext_to_number)
+    revenue = value_or_zero(datas.get(u'总收入'), cntext_to_int)
+    revenue_growth = value_or_zero(texts[5][1], cntext_to_number)
+    net_profit = value_or_zero(datas.get(u'净利润'), cntext_to_number)
+    net_profit_growth = value_or_zero(texts[7][1], cntext_to_number)
+    roe = value_or_zero(datas.get(u'ROE'), cntext_to_number)
+    outstanding_shares = value_or_zero(datas.get(u'总股本'), cntext_to_int)
+    tradable_shares = value_or_zero(datas.get(u'流通股'), cntext_to_int)
+    market_value=value_or_zero(datas.get(u'总值'), cntext_to_number)
+    circulating_value=value_or_zero(datas.get(u'流值'), cntext_to_number)
+    retained_earnings_per_share = value_or_zero(datas.get(u'每股未分配利润'), cntext_to_number)
+    debt_ratio = value_or_zero(datas.get(u'负债率'), cntext_to_number)
+    listing_date_str = value_or_zero(datas.get(u'上市时间'), str, zero='-')
+    if listing_date_str != '-':
+        listing_date = datetime.strptime(listing_date_str, '%Y-%m-%d').date()
+    else:
+        listing_date = '-'
 
-    return stock_profile
+    stock = Stock(
+        market=market,
+        code=stock_code,
+        name=stock_name,
+        status=status,
+        listing_date=listing_date,
+        outstanding_shares=outstanding_shares,
+        tradable_shares=tradable_shares,
+        market_value=market_value,
+        circulating_value=circulating_value,
+        revenue=revenue,
+        revenue_growth=revenue_growth,
+        net_profit=net_profit,
+        net_profit_growth=net_profit_growth,
+        asset_value_per_share=asset_value_per_share,
+        retained_earnings_per_share=retained_earnings_per_share,
+        debt_ratio=debt_ratio,
+        pe=pe,
+        pb=pb,
+        eps=eps,
+        roe=roe
+    )
+
+    return stock
 
 
 if __name__ == '__main__':
-    profile = fetch_stock_profile('300342')
-    print profile
+    stock = fetch_stock_profile('300342')
+    print stock
