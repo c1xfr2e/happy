@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from datetime import date, datetime, time, timedelta
+from datetime import date, time
 import pickle
 import logging
 import tushare as ts
@@ -8,8 +8,10 @@ from models import Session, HQ, HSIndex
 from indicator.basic import change_percent
 
 
-def pull_history_hq_of_index(index):
-    hqs = ts.get_h_data(index.code, start=str(index.listing_date), index=True, autype='', pause=0.01)
+def pull_history_hq_of_index(index, start_date=None):
+    if not start_date:
+        start_date = index.listing_date
+    hqs = ts.get_h_data(index.code, start=str(start_date), index=True, autype='', pause=0.01)
     iterator = reversed(hqs.index)
     first_index = next(iterator)
     first_day_hq = hqs.loc[first_index]
@@ -38,7 +40,7 @@ def pull_history_hq_of_index(index):
             from_time=time(hour=9, minute=15),
             to_time=time(hour=15),
             period='day_1',
-            name=index.short_name,
+            name=index.name,
             open=open_price,
             close=close,
             low=low,
@@ -62,7 +64,16 @@ def pull_history_hq_of_index(index):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
-    index_to_pull = {'000016'}
+    index_to_pull = {
+        '000001',
+        '000016',
+        '000300',
+        '000905',
+        '399001',
+        '399006',
+        '399102'
+    }
+    start = date(2016, 5, 26)
     s = Session()
     for index in s.query(HSIndex).filter(HSIndex.code.in_(index_to_pull)).all():
-        pull_history_hq_of_index(index)
+        pull_history_hq_of_index(index, start)
