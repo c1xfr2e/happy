@@ -5,16 +5,6 @@ from crawler.sina_finance.hq_last import hq_last
 from models import HQ, Session, HSIndex
 from indicator.basic import change_percent
 
-index_code_to_sync = [
-    '000001',
-    '000003',
-    '000016',
-    '000300',
-    '399001',
-    '399006',
-    '399102'
-]
-
 
 def pull_index_last_hq(index):
     hq = hq_last(index.market, index.code)
@@ -48,6 +38,16 @@ def pull_index_last_hq(index):
 
 
 if __name__ == '__main__':
+    index_code_to_sync = [
+        '000001',
+        '000003',
+        '000016',
+        '000300',
+        '399001',
+        '399006',
+        '399102'
+    ]
+
     s = Session()
     for index in s.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
         pull_index_last_hq(index)

@@ -9,7 +9,7 @@ from models import Session
 logging.basicConfig(format=log_format)
 
 
-def pull_all_stock(codes=None):
+def pull_all_stock_profile(codes=None):
     if codes:
         stock_codes = codes
     else:
@@ -40,4 +40,4 @@ def pull_all_stock(codes=None):
 
 
 if __name__ == '__main__':
-    pull_all_stock(['300104'])
+    pull_all_stock_profile(['300104'])
