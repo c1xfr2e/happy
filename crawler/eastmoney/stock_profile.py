@@ -48,6 +48,8 @@ def fetch_stock_profile(stock_code):
     soup = BeautifulSoup(r.content.decode('gbk'))
 
     stock_name = soup.find('h2', id='name').text
+    # last_price = soup.find('strong', id='price9').text
+
     status = 'L'
     dead_status = [u'已退市', u'终止上市']
     stop_status = [u'暂停上市']

@@ -40,4 +40,4 @@ def pull_all_stock(codes=None):
 
 
 if __name__ == '__main__':
-    pull_all_stock(['600734'])
+    pull_all_stock(['300104'])

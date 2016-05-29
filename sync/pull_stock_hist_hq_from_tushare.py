@@ -2,18 +2,19 @@
 
 from datetime import date, time
 import logging
+from sqlalchemy import and_
 import tushare as ts
 from models import Session, Quote, Stock
 from indicator.basic import change_percent
 from db.mongo import client
 
 
-def pull_history_quotes(security, is_index, start_date=None):
-    if not start_date:
+def pull_history_quotes(security, is_index, start_date=None, end_date=None):
+    if not start_date or start_date < security.listing_date:
         start_date = security.listing_date
 
     try:
-        quotes_df = ts.get_h_data(security.code, start=str(start_date), index=is_index, pause=0.01)
+        quotes_df = ts.get_h_data(security.code, start=str(start_date), end=end_date, index=is_index, pause=0.01)
     except:
         result = client.alchemist.pull_hist_failed.update(
             {'market': security.market, 'code': security.code},
@@ -93,5 +94,13 @@ def pull_history_quotes(security, is_index, start_date=None):
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
     s = Session()
-    for stock in s.query(Stock).filter(Stock.status=='L').all():
+
+    done_codes = s.query(Quote.code.distinct()).subquery()
+    stocks_to_pull = s.query(Stock).filter(and_(
+        Stock.status == 'L',
+        Stock.code.notin_(done_codes)
+    )).all()
+
+    start_date = date(2010, 1, 1)
+    for stock in stocks_to_pull:
         pull_history_quotes(stock, is_index=False)
