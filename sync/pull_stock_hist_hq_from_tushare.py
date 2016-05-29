@@ -10,7 +10,7 @@ from indicator.basic import change_percent
 def pull_history_quotes(security, is_index, start_date=None):
     if not start_date:
         start_date = security.listing_date
-    quotes_df = ts.get_h_data(security.code, start=str(start_date), index=is_index, autype='', pause=0.01)
+    quotes_df = ts.get_h_data(security.code, start=str(start_date), index=is_index, pause=0.01)
     index_riter = reversed(quotes_df.index)
     first = next(index_riter)
     first_hq = quotes_df.loc[first]
