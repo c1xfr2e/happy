@@ -32,6 +32,12 @@ def pull_history_quotes(security, is_index, start_date=None):
         change = close - pre_close
         change_pct = change_percent(close, pre_close)
 
+        '''
+        turnover = None
+        if security.tradable_shares != 0:
+            turnover = volume / security.tradable_shares * 100
+        '''
+
         quote = Quote(
             market=security.market,
             code=security.code,
@@ -52,10 +58,10 @@ def pull_history_quotes(security, is_index, start_date=None):
             amount=amount
         )
 
-        sess.add(quote)
+        sess.merge(quote)
         pre_close = close
 
-        logging.info('[%s][%s]' %(str(security.code), str(from_date)))
+        # logging.info('[%s][%s]' %(str(security.code), str(from_date)))
 
     sess.commit()
     logging.info(str(security.code) + ' db session commited')
@@ -63,10 +69,6 @@ def pull_history_quotes(security, is_index, start_date=None):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
-    code_to_pull = {
-        '300342'
-    }
-    start = date(2016, 5, 26)
     s = Session()
-    for stock in s.query(Stock).filter(Stock.code.in_(code_to_pull)).all():
+    for stock in s.query(Stock).filter(Stock.status=='L').all():
         pull_history_quotes(stock, is_index=False)
