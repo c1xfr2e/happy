@@ -5,12 +5,25 @@ import logging
 import tushare as ts
 from models import Session, Quote, Stock
 from indicator.basic import change_percent
+from db.mongo import client
 
 
 def pull_history_quotes(security, is_index, start_date=None):
     if not start_date:
         start_date = security.listing_date
-    quotes_df = ts.get_h_data(security.code, start=str(start_date), index=is_index, pause=0.01)
+
+    try:
+        quotes_df = ts.get_h_data(security.code, start=str(start_date), index=is_index, pause=0.01)
+    except:
+        result = client.alchemist.pull_hist_failed.update(
+            {'market': security.market, 'code': security.code},
+            {'market': security.market, 'code': security.code, 'reason': 'ts.get_h_data throw exception'},
+            upsert=True
+        )
+        logging.error('Pull tushare history quotes failed.')
+        logging.error(result)
+        return
+
     index_riter = reversed(quotes_df.index)
     first = next(index_riter)
     first_hq = quotes_df.loc[first]
@@ -63,8 +76,18 @@ def pull_history_quotes(security, is_index, start_date=None):
 
         # logging.info('[%s][%s]' %(str(security.code), str(from_date)))
 
-    sess.commit()
-    logging.info(str(security.code) + ' db session commited')
+    try:
+        sess.commit()
+        logging.info(str(security.code) + ' db session commited')
+    except:
+        result = client.alchemist.pull_hist_failed.update(
+            {'market': security.market, 'code': security.code},
+            {'market': security.market, 'code': security.code, 'reason': 'session commit exception'},
+            upsert=True
+        )
+        logging.error('Session commit failed.')
+        logging.error(result)
+        return
 
 
 if __name__ == '__main__':
