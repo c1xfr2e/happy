@@ -51,19 +51,18 @@ def fetch_stock_profile(stock_code):
     # last_price = soup.find('strong', id='price9').text
 
     status = 'L'
-    dead_status = [u'已退市', u'终止上市']
-    stop_status = [u'暂停上市']
-    if stock_name in dead_status:
-        status = 'DE'
-    elif stock_name in stop_status:
-        status = 'S'
 
     '''
         上市状态
             上市: L
             退市: DE
+        dead_status = [u'已退市', u'终止上市']
+        stop_status = [u'暂停上市']
+        if stock_name in dead_status:
+            status = 'DE'
+        elif stock_name in stop_status:
+            status = 'S'
     '''
-
 
     texts = []
     trs = soup.find('table', id='rtp2').find('tbody').find_all('tr')
@@ -74,18 +73,11 @@ def fetch_stock_profile(stock_code):
 
     datas = {_[0]: _[1] for _ in texts}
 
-    eps = datas.get(u'收益(一)', None)
-    if eps is None:
-        eps = datas.get(u'收益')
-    try:
-        eps = Decimal(eps)
-    except:
-        eps = 0.0
-    try:
-        pe = Decimal(datas.get(u'PE(动)', 0))
-    except:
-        pe = 0
+    eps = value_or_zero(datas.get(u'收益(一)'), Decimal)
+    if eps == 0:
+        eps = value_or_zero(datas.get(u'收益'), Decimal)
 
+    pe = value_or_zero(datas.get(u'PE(动)'), Decimal)
     asset_value_per_share = value_or_zero(datas.get(u'净资产'), Decimal)
     pb = value_or_zero(datas.get(u'净利率'), cntext_to_number)
     revenue = value_or_zero(datas.get(u'总收入'), cntext_to_int)
@@ -100,6 +92,7 @@ def fetch_stock_profile(stock_code):
     retained_earnings_per_share = value_or_zero(datas.get(u'每股未分配利润'), cntext_to_number)
     debt_ratio = value_or_zero(datas.get(u'负债率'), cntext_to_number)
     listing_date_str = value_or_zero(datas.get(u'上市时间'), str, zero='-')
+    gross_profit_margin = value_or_zero(datas.get(u'毛利率'), cntext_to_number)
     if listing_date_str != '-':
         listing_date = datetime.strptime(listing_date_str, '%Y-%m-%d').date()
     else:
@@ -122,6 +115,7 @@ def fetch_stock_profile(stock_code):
         asset_value_per_share=asset_value_per_share,
         retained_earnings_per_share=retained_earnings_per_share,
         debt_ratio=debt_ratio,
+        gross_profit_margin=gross_profit_margin,
         pe=pe,
         pb=pb,
         eps=eps,

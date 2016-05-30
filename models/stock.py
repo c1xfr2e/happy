@@ -19,6 +19,7 @@ class Stock(Base):
     tradable_shares = Column(BigInteger)
 
     asset_value_per_share = Column(Numeric(precision=8, scale=3))
+    gross_profit_margin = Column(Numeric(precision=8, scale=2))
     pb = Column(Numeric(precision=8, scale=2))
     eps = Column(Numeric(precision=8, scale=3))
     roe = Column(Numeric(precision=8, scale=2))
