@@ -12,7 +12,7 @@ app.config_from_object(celery_config)
 
 app.conf.CELERYBEAT_SCHEDULE = {
     'pull_today_quote': {
-        'task': 'sync.celery_cron.pull_today_quote',
+        'task': 'cron.celery_cron.pull_today_quote',
         'schedule': crontab(day_of_week='mon-fri', hour='15', minute='30')
     }
 }
