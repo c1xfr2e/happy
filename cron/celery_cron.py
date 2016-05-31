@@ -14,6 +14,10 @@ app.conf.CELERYBEAT_SCHEDULE = {
     'pull_today_quote': {
         'task': 'cron.celery_cron.pull_today_quote',
         'schedule': crontab(day_of_week='mon-fri', hour='15', minute='30')
+    },
+    'test': {
+        'task': 'cron.celery_cron.test',
+        'schedule': crontab(day_of_week='mon-fri', hour='16', minute='35')
     }
 }
 
@@ -23,3 +27,8 @@ def pull_today_quote():
     s = Session()
     for index in s.query(HSIndex).all():
         pull_index_last_hq(index)
+
+
+@app.task
+def test():
+    print 'test'
