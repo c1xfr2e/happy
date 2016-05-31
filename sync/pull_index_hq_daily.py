@@ -20,7 +20,7 @@ def pull_index_last_hq(index):
         from_time=time(hour=9, minute=15),
         to_time=time(hour=15),
         period='day_1',
-        name=index.short_name,
+        name=index.name,
         open=hq['open'],
         close=hq['price'],
         low=hq['low'],
