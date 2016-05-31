@@ -1,28 +1,28 @@
 # coding: utf8
 
 from datetime import date, time
-from crawler.sina_finance.hq_last import hq_last
+from crawler.tjqka.hq_last import hq_last
 from models import HQ, Session, HSIndex
 from indicator.basic import change_percent
 
 
-def pull_index_last_hq(index):
-    hq = hq_last(index.market, index.code)
+def pull_last_quote(security, is_index):
+    hq = hq_last(security.market, security.code, is_index)
     from_date = to_date = date.today()
-    change = hq['price'] - hq['pre_close']
-    change_pct = change_percent(hq['price'], hq['pre_close'])
+    change = hq.get('change') or hq['close'] - hq['pre_close']
+    change_pct = hq.get('change_percent') or change_percent(hq['close'], hq['pre_close'])
 
     hq_today = HQ(
-        market=index.market,
-        code=index.code,
+        market=security.market,
+        code=security.code,
         from_date=from_date,
         to_date=to_date,
         from_time=time(hour=9, minute=15),
         to_time=time(hour=15),
         period='day_1',
-        name=index.name,
+        name=security.name,
         open=hq['open'],
-        close=hq['price'],
+        close=hq['close'],
         low=hq['low'],
         high=hq['high'],
         pre_close=hq['pre_close'],
@@ -50,4 +50,4 @@ if __name__ == '__main__':
 
     s = Session()
     for index in s.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
-        pull_index_last_hq(index)
+        pull_last_quote(index, True)
