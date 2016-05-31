@@ -31,13 +31,17 @@ def pull_all_stock_profile(codes=None):
 
     session.commit()
 
-    result = client.alchemist.stock_codes.update(
+    client.alchemist.stock_codes.update(
         {'code': {'$in': failed_codes}},
         {'$set': {'status': 'fetch_profile_failed'}},
         multi=True
     )
-    logging.info(result)
+    client.alchemist.stock_codes.update(
+        {'code': {'$not': {'$in': failed_codes}}},
+        {'$set': {'status': 'fetch_profile_done'}},
+        multi=True
+    )
 
 
 if __name__ == '__main__':
-    pull_all_stock_profile(['300104'])
+    pull_all_stock_profile()
