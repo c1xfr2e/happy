@@ -9,13 +9,7 @@ from models import Session
 logging.basicConfig(format=log_format)
 
 
-def pull_all_stock_profile(codes=None):
-    if codes:
-        stock_codes = codes
-    else:
-        codes_objs = client.alchemist.stock_codes.find()  # {'status': {'$ne': 'fetch_profile_succeed'}}
-        stock_codes = [_['code'] for _ in codes_objs]
-
+def pull_all_stock_profile(stock_codes):
     session = Session()
     failed_codes = []
 
@@ -44,4 +38,5 @@ def pull_all_stock_profile(codes=None):
 
 
 if __name__ == '__main__':
-    pull_all_stock_profile()
+    codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
+    pull_all_stock_profile(codes)
