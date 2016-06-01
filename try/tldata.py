@@ -11,7 +11,7 @@ headers = {
 }
 payload = {
     'field': '',
-    'beginDate': '20100101',
+    'beginDate': '20160531',
     'endDate': '20160601',
     'secID': '',
     'ticker': '300342',
@@ -21,3 +21,7 @@ payload = {
 r = requests.get(url, headers=headers, params=payload)
 print(r.url)
 print(r.json())
+
+data = r.json()['data'][1]
+for k, v in data.iteritems():
+    print k, v
