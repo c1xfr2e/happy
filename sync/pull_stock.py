@@ -1,15 +1,12 @@
 # coding: utf-8
 
 import logging
-from config import log_format
 from crawler.eastmoney.stock_profile import fetch_stock_profile
 from db.mongo import client
 from models import Session
 
-logging.basicConfig(format=log_format)
 
-
-def pull_all_stock_profile(stock_codes):
+def pull_stock_profile(stock_codes):
     session = Session()
     failed_codes = []
 
@@ -17,7 +14,6 @@ def pull_all_stock_profile(stock_codes):
         try:
             stock = fetch_stock_profile(code)
             session.merge(stock)
-            logging.warning(stock.code)
         except Exception as e:
             logging.warning('%s: %s' % (code, e))
             failed_codes.append(code)
@@ -39,4 +35,4 @@ def pull_all_stock_profile(stock_codes):
 
 if __name__ == '__main__':
     codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
-    pull_all_stock_profile(codes)
+    pull_stock_profile(codes)

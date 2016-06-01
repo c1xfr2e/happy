@@ -3,10 +3,15 @@
 from celery import Celery
 from celery.schedules import crontab
 from cron import celery_config
-from sync.pull_stock import pull_all_stock_profile
+from sync.pull_stock import pull_stock_profile
 from sync.pull_last_quote import pull_last_quote
 from models import Session, HSIndex
 from db.mongo import client
+
+import logging
+from config import log_format
+logging.basicConfig(format=log_format)
+
 
 app = Celery('celery_cron')
 app.config_from_object(celery_config)
@@ -26,7 +31,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
 @app.task
 def pull_stock_profile():
     codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
-    pull_all_stock_profile(codes)
+    pull_stock_profile(codes)
 
 
 @app.task
