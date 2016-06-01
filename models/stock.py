@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from sqlalchemy import BigInteger, Column, Date, Numeric, String
+from sqlalchemy import BigInteger, Column, Date, DateTime, Numeric, String
 from . import Base
 
 
@@ -35,3 +35,5 @@ class Stock(Base):
     full_name = Column(String(32))
     status = Column(String(16))
     listing_date = Column(Date)
+
+    update_time = Column(DateTime)

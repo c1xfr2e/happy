@@ -119,7 +119,8 @@ def fetch_stock_profile(stock_code):
         pe=pe,
         pb=pb,
         eps=eps,
-        roe=roe
+        roe=roe,
+        update_time=datetime.now()
     )
 
     return stock
