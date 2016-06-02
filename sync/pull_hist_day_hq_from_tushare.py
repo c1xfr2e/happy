@@ -8,10 +8,11 @@ from models import Session, HQ, HSIndex
 from indicator.basic import change_percent
 
 
-def pull_history_hq_of_index(index, start_date=None):
+def pull_history_hq_of_index(index, start_date=None, end_date=None):
     if not start_date:
         start_date = index.listing_date
-    hqs = ts.get_h_data(index.code, start=str(start_date), index=True, autype='', pause=0.01)
+    hqs = ts.get_h_data(index.code, start=str(start_date), end=str(end_date),
+                        index=True, autype='', pause=0.01)
     iterator = reversed(hqs.index)
     first_index = next(iterator)
     first_day_hq = hqs.loc[first_index]
@@ -52,7 +53,7 @@ def pull_history_hq_of_index(index, start_date=None):
             amount=amount
         )
 
-        sess.add(hq_day)
+        sess.merge(hq_day)
 
         pre_close = close
 
@@ -73,7 +74,8 @@ if __name__ == '__main__':
         '399006',
         '399102'
     }
-    start = date(2016, 5, 26)
+    start = date(2016, 5, 30)
+    end = date(2016, 6, 1)
     s = Session()
     for index in s.query(HSIndex).filter(HSIndex.code.in_(index_to_pull)).all():
-        pull_history_hq_of_index(index, start)
+        pull_history_hq_of_index(index, start, end)

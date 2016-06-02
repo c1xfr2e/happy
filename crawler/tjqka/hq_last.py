@@ -43,6 +43,8 @@ def hq_last(market, code, index=False):
             code = '1B0300'
         elif code == '000003':
             code = '1A0003'
+        elif code == '000016':
+            code = '1B0016'
         url = index_hq_url.format(code=code)
     else:
         url = stock_url.format(market=market, code=code)

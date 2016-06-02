@@ -2,7 +2,7 @@
 
 from datetime import date, time
 from crawler.tjqka.hq_last import hq_last
-from models import HQ, Session, HSIndex
+from models import HQ, Quote, Session, HSIndex
 from indicator.basic import change_percent
 
 
@@ -12,7 +12,12 @@ def pull_last_quote(security, is_index):
     change = hq.get('change') or hq['close'] - hq['pre_close']
     change_pct = hq.get('change_percent') or change_percent(hq['close'], hq['pre_close'])
 
-    hq_today = HQ(
+    if is_index:
+        model_class = HQ
+    else:
+        model_class = Quote
+
+    quote = model_class(
         market=security.market,
         code=security.code,
         from_date=from_date,
@@ -33,19 +38,19 @@ def pull_last_quote(security, is_index):
     )
 
     ss = Session()
-    ss.merge(hq_today)
+    ss.merge(quote)
     ss.commit()
 
 
 if __name__ == '__main__':
     index_code_to_sync = [
-        '000001',
-        '000003',
-        '000016',
-        '000300',
-        '399001',
-        '399006',
-        '399102'
+        # '000001',
+        # '000003',
+        '000016'
+        # '000300',
+        # '399001',
+        # '399006',
+        # '399102'
     ]
 
     s = Session()
