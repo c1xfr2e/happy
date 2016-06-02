@@ -1,7 +1,6 @@
 # coding: utf-8
 
 from datetime import date, time
-import pickle
 import logging
 import tushare as ts
 from models import Session, HQ, HSIndex

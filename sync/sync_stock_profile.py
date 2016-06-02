@@ -1,9 +1,10 @@
 # coding: utf-8
 
 import logging
-from config import log_format
+
 from crawler.eastmoney.stock_profile import fetch_stock_profile
 from db.mongo import client
+from sync.tldata.config import log_format
 
 logging.basicConfig(format=log_format)
 
