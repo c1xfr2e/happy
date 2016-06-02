@@ -37,8 +37,6 @@ for stock in stocks:
                 'status': listing_status
             }
         )
-        break
-    break
 
 sess.commit()
 
