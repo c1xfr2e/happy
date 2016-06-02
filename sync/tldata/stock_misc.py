@@ -55,19 +55,3 @@ for stock in stocks:
         )
 
 sess.commit()
-
-'''
-listSectorCD 1
-exchangeCD XSHG
-secID 600000.XSHG
-secFullName 上海浦东发展银行股份有限公司
-secShortNameEn Pudong Dev
-listDate 1999-11-10 00:00:00
-secShortName 浦发银行
-secFullNameEn Shanghai Pudong Development Bank Co.,Ltd.
-listStatusCD L
-partyID 603
-cnSpell PFYH
-ticker 600000
-equTypeCD 0201010201
-'''
