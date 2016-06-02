@@ -32,7 +32,7 @@ stocks = sess.query(Stock).filter(Stock.pinyin.is_(None)).all()
 
 for stock in stocks:
     payload = {
-        'field': '',
+        'field': 'secFullName,listStatusCD',
         'ticker': stock.code,
         'secID': '',
         'equTypeCD': '',
