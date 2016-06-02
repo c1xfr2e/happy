@@ -53,4 +53,7 @@ for stock in stocks:
                 'status': data['listStatusCD']
             }
         )
-        sess.commit()
+
+sess.commit()
+
+
