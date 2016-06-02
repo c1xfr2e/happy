@@ -2,15 +2,27 @@
 
 from datetime import date, time
 from crawler.tjqka.hq_last import hq_last
-from models import HQ, Quote, Session, HSIndex
+from models import HQ, Quote, Session, HSIndex, Stock
 from indicator.basic import change_percent
 
 
 def pull_last_quote(security, is_index):
     hq = hq_last(security.market, security.code, is_index)
     from_date = to_date = date.today()
-    change = hq.get('change') or hq['close'] - hq['pre_close']
-    change_pct = hq.get('change_percent') or change_percent(hq['close'], hq['pre_close'])
+
+    open = hq.get('open', 0)
+    # SUSPEND TODAY
+    if open == 0:
+        high, low, close, pre_close, volume, amount, change, percent = 0, 0, 0, 0, 0, 0, 0, 0
+    else:
+        close = hq.get('close', 0)
+        low = hq.get('low', 0)
+        high = hq.get('high', 0)
+        pre_close = hq.get('pre_close', 0)
+        volume = hq.get('volume', 0)
+        amount = hq.get('amount', 0)
+        change = hq.get('change', 0) or hq.get('close', 0) - hq.get('pre_close', 0)
+        percent = hq.get('change_percent') or change_percent(close, pre_close) if pre_close else 0
 
     if is_index:
         model_class = HQ
@@ -26,16 +38,20 @@ def pull_last_quote(security, is_index):
         to_time=time(hour=15),
         period='day_1',
         name=security.name,
-        open=hq['open'],
-        close=hq['close'],
-        low=hq['low'],
-        high=hq['high'],
-        pre_close=hq['pre_close'],
+        open=open,
+        close=close,
+        low=low,
+        high=high,
+        pre_close=pre_close,
         change=change,
-        change_percent=change_pct,
-        volume=hq['volume'],
-        amount=hq['amount']
+        change_percent=percent,
+        volume=volume,
+        amount=amount
     )
+
+    if not is_index:
+        turnover = volume / security.tradable_shares * 100 if security.tradable_shares > 0 else 0
+        quote.turnover = round(turnover, 2)
 
     ss = Session()
     ss.merge(quote)
@@ -43,16 +59,24 @@ def pull_last_quote(security, is_index):
 
 
 if __name__ == '__main__':
+    sess = Session()
+
+    stocks = sess.query(Stock).filter(Stock.status == 'L').all()
+    # stocks = sess.query(Stock).filter(Stock.code == '600035').all()
+    for stock in stocks:
+        pull_last_quote(stock, False)
+
+    '''
     index_code_to_sync = [
-        # '000001',
-        # '000003',
+        '000001',
+        '000003',
         '000016'
-        # '000300',
-        # '399001',
-        # '399006',
-        # '399102'
+        '000300',
+        '399001',
+        '399006',
+        '399102'
     ]
 
-    s = Session()
-    for index in s.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
+    for index in sess.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
         pull_last_quote(index, True)
+    '''

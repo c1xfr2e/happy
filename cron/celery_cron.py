@@ -5,7 +5,7 @@ from celery.schedules import crontab
 from cron import celery_config
 from sync.pull_stock import pull_stock_profile as psp
 from sync.pull_last_quote import pull_last_quote
-from models import Session, HSIndex
+from models import Session, HSIndex, Stock
 from db.mongo import client
 
 import logging
@@ -46,6 +46,10 @@ def pull_close_quote():
         '399102'
     ]
 
-    s = Session()
-    for index in s.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
+    ss = Session()
+    for index in ss.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
         pull_last_quote(index, True)
+
+    stocks = ss.query(Stock).filter(Stock.status == 'L').all()
+    for stock in stocks:
+        pull_last_quote(stock, False)
