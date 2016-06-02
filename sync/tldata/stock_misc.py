@@ -28,7 +28,7 @@ def pull_cnspell(ticker):
 
 
 sess = Session()
-stocks = sess.query(Stock).all()
+stocks = sess.query(Stock).filter(Stock.pinyin.is_(None)).all()
 
 for stock in stocks:
     payload = {
