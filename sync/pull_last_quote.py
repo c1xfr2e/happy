@@ -14,6 +14,7 @@ def pull_last_quote(security, is_index):
     # SUSPEND TODAY
     if open == 0:
         high, low, close, pre_close, volume, amount, change, percent = 0, 0, 0, 0, 0, 0, 0, 0
+        return
     else:
         close = hq.get('close', 0)
         low = hq.get('low', 0)
@@ -36,7 +37,7 @@ def pull_last_quote(security, is_index):
         to_date=to_date,
         from_time=time(hour=9, minute=15),
         to_time=time(hour=15),
-        period='day_1',
+        period='d1',
         name=security.name,
         open=open,
         close=close,

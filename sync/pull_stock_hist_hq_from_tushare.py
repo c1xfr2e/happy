@@ -14,7 +14,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
         start_date = security.listing_date
 
     try:
-        quotes_df = ts.get_h_data(security.code, start=str(start_date), end=end_date, index=is_index, pause=0.01)
+        quotes_df = ts.get_h_data(security.code, start=str(start_date), end=str(end_date), index=is_index, pause=0.01)
     except:
         result = client.alchemist.pull_hist_failed.update(
             {'market': security.market, 'code': security.code},
@@ -59,7 +59,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
             to_date=to_date,
             from_time=time(hour=9, minute=15),
             to_time=time(hour=15),
-            period='day_1',
+            period='d1',
             name=security.name,
             open=open,
             close=close,
@@ -101,6 +101,8 @@ if __name__ == '__main__':
         Stock.code.notin_(done_codes)
     )).all()
 
-    start_date = date(2010, 1, 1)
+    stocks_to_pull = s.query(Stock).filter(Stock.code=='000418').all()
+    start_date = date(2016, 6, 1)
+    end_date = date(2016, 6, 3)
     for stock in stocks_to_pull:
-        pull_history_quotes(stock, is_index=False)
+        pull_history_quotes(stock, is_index=False, start_date=start_date, end_date=end_date)

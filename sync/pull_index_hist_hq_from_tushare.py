@@ -39,7 +39,7 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
             to_date=to_date,
             from_time=time(hour=9, minute=15),
             to_time=time(hour=15),
-            period='day_1',
+            period='d1',
             name=index.name,
             open=open_price,
             close=close,
