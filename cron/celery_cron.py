@@ -10,6 +10,8 @@ from db.mongo import client
 
 import logging
 from config import log_format
+
+logging.getLogger().setLevel(logging.WARNING)
 logging.basicConfig(format=log_format)
 
 
