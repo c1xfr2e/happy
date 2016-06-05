@@ -54,9 +54,7 @@ def pull_last_quote(security, is_index):
         turnover = volume / security.tradable_shares * 100 if security.tradable_shares > 0 else 0
         quote.turnover = round(turnover, 2)
 
-    ss = Session()
-    ss.merge(quote)
-    ss.commit()
+    return quote
 
 
 if __name__ == '__main__':
