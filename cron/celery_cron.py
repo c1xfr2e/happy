@@ -49,12 +49,15 @@ def pull_close_quote():
     ]
 
     ss = Session()
-
     for index in ss.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
-        ss.add(pull_last_quote(index, True))
+        quote = pull_last_quote(index, True)
+        if quote:
+            ss.add(quote)
     ss.commit()
 
     stocks = ss.query(Stock).filter(Stock.status == 'L').all()
     for stock in stocks:
-        ss.add(pull_last_quote(stock, False))
+        quote = pull_last_quote(stock, False)
+        if quote:
+            ss.add(quote)
     ss.commit()
