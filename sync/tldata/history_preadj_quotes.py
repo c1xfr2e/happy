@@ -3,6 +3,7 @@
 import logging
 import requests
 from datetime import date, time
+from decimal import Decimal
 
 from sqlalchemy import and_
 
@@ -40,10 +41,18 @@ def pull_quotes(start, end, codes=None):
                 continue
 
             quotes_data = json_res['data']
-
+            quote_records = []
             for data in quotes_data:
                 if not data['isOpen']:
                     continue
+
+                adj_factor = data['accumAdjFactor']
+                open = Decimal(data['openPrice'] / adj_factor).quantize(Decimal('.001'))
+                close = Decimal(data['closePrice'] / adj_factor).quantize(Decimal('.001'))
+                low = Decimal(data['lowestPrice'] / adj_factor).quantize(Decimal('.001'))
+                high = Decimal(data['highestPrice'] / adj_factor).quantize(Decimal('.001'))
+                pre_close = Decimal(data['actPreClosePrice']).quantize(Decimal('.001'))
+
                 quote = Quote(
                     market=stock.market,
                     code=stock.code,
@@ -53,19 +62,21 @@ def pull_quotes(start, end, codes=None):
                     to_time=time(hour=15),
                     period='d1',
                     name=stock.name,
-                    open=data['openPrice'],
-                    close=data['closePrice'],
-                    low=data['lowestPrice'],
-                    high=data['highestPrice'],
-                    pre_close=data['preClosePrice'],
-                    change=data['closePrice'] - data['preClosePrice'],
-                    change_percent=change_percent(data['closePrice'], data['preClosePrice']),
+                    open=open,
+                    close=close,
+                    low=low,
+                    high=high,
+                    pre_close=pre_close,
+                    change=close - pre_close,
+                    change_percent=change_percent(close, pre_close),
                     volume=data['turnoverVol'],
                     amount=data['turnoverValue'],
                     turnover=data['turnoverRate'] * 100
                 )
-                sess.merge(quote)
 
+                quote_records.append(quote)
+
+            sess.add_all(quote_records)
             sess.commit()
 
         except Exception as e:
@@ -76,5 +87,5 @@ def pull_quotes(start, end, codes=None):
 
 if __name__ == '__main__':
     start_date = date(2010, 1, 4)
-    end_date = date(2015, 12, 6)
-    pull_quotes(start_date, end_date, codes=['000418'])
+    end_date = date(2016, 6, 3)
+    pull_quotes(start_date, end_date)
