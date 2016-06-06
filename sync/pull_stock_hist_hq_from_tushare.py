@@ -102,7 +102,7 @@ if __name__ == '__main__':
     )).all()
 
     stocks_to_pull = s.query(Stock).filter(Stock.code=='000418').all()
-    start_date = date(2016, 6, 1)
-    end_date = date(2016, 6, 3)
+    start_date = date(2010, 1, 4)
+    end_date = date(2010, 1, 13)
     for stock in stocks_to_pull:
         pull_history_quotes(stock, is_index=False, start_date=start_date, end_date=end_date)

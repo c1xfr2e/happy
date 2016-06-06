@@ -87,5 +87,5 @@ def pull_quotes(start, end, codes=None):
 
 if __name__ == '__main__':
     start_date = date(2010, 1, 4)
-    end_date = date(2016, 6, 3)
-    pull_quotes(start_date, end_date)
+    end_date = date(2010, 1, 8)
+    pull_quotes(start_date, end_date, codes=['000418'])
