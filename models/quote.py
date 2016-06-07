@@ -14,7 +14,7 @@ class Quote(Base):
     from_time = Column(Time, primary_key=True, server_default='00:00:00')
     to_time = Column(Time, primary_key=True, server_default='00:00:00')
 
-    period = Column(String(16), nullable=False)
+    period = Column(String(16), primary_key=True)
     name = Column(String(16))
 
     open = Column(Numeric(precision=10, scale=3), nullable=False)
