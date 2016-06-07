@@ -1,18 +1,16 @@
 # coding: utf-8
 
 import logging
+import sys
 from datetime import date, time
 
-from models import Quote, Session
+from sqlalchemy import and_
+
+from models import HSIndex, HQ, Quote, Session
 from indicator.basic import change_percent
 
 
-def create_week_quotes_group(code):
-    sess = Session()
-    quotes = sess.query(Quote).filter(Quote.code == code).order_by(Quote.from_date.asc()).all()
-    if not quotes:
-        return
-
+def group_quotes_by_week(quotes):
     first = quotes[0]
     start_week_date = first.from_date
     year = start_week_date.year
@@ -33,30 +31,29 @@ def create_week_quotes_group(code):
     return week_quote_groups
 
 
-def week_quote_from_day(days):
-    from_date = days[0].from_date
-    to_date = days[-1].to_date
-    pre_close = days[0].pre_close
-    open = days[0].open
-    high = max(q.high for q in days)
-    low = min(q.low for q in days)
-    close = days[-1].close
-    volume = sum(q.volume for q in days)
-    amount = sum(q.amount for q in days)
-    change = days[-1].close - days[0].pre_close
-    percent = change_percent(close, pre_close)
-    shares = int(days[-1].volume / days[-1].turnover * 100)
-    turnover = round(float(volume) / shares * 100, 2)
+def week_quote_from_days(day_quotes_of_week, quote_class):
+    first = day_quotes_of_week[0]
+    last = day_quotes_of_week[-1]
 
-    week_quote = Quote(
-        market=days[0].market,
-        code=days[0].code,
-        from_date=from_date,
-        to_date=to_date,
+    pre_close = first.pre_close
+    open = first.open
+    high = max(q.high for q in day_quotes_of_week)
+    low = min(q.low for q in day_quotes_of_week)
+    close = last.close
+    volume = sum(q.volume for q in day_quotes_of_week)
+    amount = sum(q.amount for q in day_quotes_of_week)
+    change = last.close - first.pre_close
+    percent = change_percent(close, pre_close)
+
+    week_quote = quote_class(
+        market=first.market,
+        code=first.code,
+        from_date=first.from_date,
+        to_date=last.to_date,
         from_time=time(hour=9, minute=15),
         to_time=time(hour=15),
         period='w1',
-        name=days[0].name,
+        name=first.name,
         open=open,
         close=close,
         low=low,
@@ -65,17 +62,26 @@ def week_quote_from_day(days):
         change=change,
         change_percent=percent,
         volume=volume,
-        amount=amount,
-        turnover=turnover
+        amount=amount
     )
+
+    if last.turnover:
+        estimate_shares = int(last.volume / last.turnover * 100)
+        week_quote.turnover = round(float(volume) / estimate_shares * 100, 3)
 
     return week_quote
 
+
 if __name__ == '__main__':
     sess = Session()
-    week_groups = create_week_quotes_group('000418')
-    for wg in week_groups:
-        week_quote = week_quote_from_day(wg)
-        sess.merge(week_quote)
-        # print wg[0].from_date.isocalendar()[0], wg[0].from_date.isocalendar()[1]
-    sess.commit()
+    indices = sess.query(HSIndex).all()
+    for index in indices:
+        index_quotes = sess.query(HQ).filter(HQ.code == index.code).all()
+
+    quotes = sess.query(Quote).filter(Quote.code == '600137').order_by(Quote.from_date.asc()).all()
+    if quotes:
+        week_groups = group_quotes_by_week(quotes)
+        for wg in week_groups:
+            quote = week_quote_from_days(wg, Quote)
+            print quote.to_date, quote.open, quote.high, quote.low, quote.close,\
+                quote.volume, quote.amount, quote.turnover
