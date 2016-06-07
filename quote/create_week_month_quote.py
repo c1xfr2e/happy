@@ -73,6 +73,9 @@ if __name__ == '__main__':
     securities = ss.query(Quote.market, Quote.code).distinct().all()
 
     for sec in securities:
+        if sec.market == 'sh' and sec.code == '000001':
+            continue
+
         day_quotes = ss.query(Quote).filter(
             and_(Quote.market == sec.market, Quote.code == sec.code, Quote.period == 'd1')
         ).order_by(Quote.from_date.asc()).all()
