@@ -1,10 +1,8 @@
 # coding: utf-8
 
-import logging
-import sys
-from datetime import date, time
-
-from models import HSIndex, HQ, Quote, Session
+from datetime import time
+from sqlalchemy import and_
+from models import HSIndex, Quote, Session
 from indicator.basic import change_percent
 
 
@@ -29,7 +27,7 @@ def group_quotes_by_week(quotes):
     return week_quote_groups
 
 
-def week_quote_from_days(day_quotes_of_week, quote_class):
+def week_quote_from_days(day_quotes_of_week):
     first = day_quotes_of_week[0]
     last = day_quotes_of_week[-1]
 
@@ -43,7 +41,7 @@ def week_quote_from_days(day_quotes_of_week, quote_class):
     change = last.close - first.pre_close
     percent = change_percent(close, pre_close)
 
-    week_quote = quote_class(
+    week_quote = Quote(
         market=first.market,
         code=first.code,
         from_date=first.from_date,
@@ -71,15 +69,20 @@ def week_quote_from_days(day_quotes_of_week, quote_class):
 
 
 if __name__ == '__main__':
-    sess = Session()
-    indices = sess.query(HSIndex).all()
-    for index in indices:
-        index_quotes = sess.query(HQ).filter(HQ.code == index.code).all()
+    ss = Session()
+    securities = ss.query(Quote.market, Quote.code).distinct().all()
 
-    quotes = sess.query(Quote).filter(Quote.code == '600137').order_by(Quote.from_date.asc()).all()
-    if quotes:
-        week_groups = group_quotes_by_week(quotes)
+    for sec in securities:
+        day_quotes = ss.query(Quote).filter(
+            and_(Quote.market == sec.market, Quote.code == sec.code, Quote.period == 'd1')
+        ).order_by(Quote.from_date.asc()).all()
+
+        week_quotes = []
+        week_groups = group_quotes_by_week(day_quotes)
         for wg in week_groups:
-            quote = week_quote_from_days(wg, Quote)
-            print quote.to_date, quote.open, quote.high, quote.low, quote.close,\
-                quote.volume, quote.amount, quote.turnover
+            quote = week_quote_from_days(wg)
+            week_quotes.append(quote)
+
+        ss.add_all(week_quotes)
+
+    ss.commit()
