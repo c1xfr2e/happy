@@ -67,7 +67,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
             high=high,
             pre_close=pre_close,
             change=change,
-            change_percent=change_pct,
+            percent=change_pct,
             volume=volume,
             amount=amount
         )

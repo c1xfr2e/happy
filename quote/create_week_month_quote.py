@@ -4,8 +4,6 @@ import logging
 import sys
 from datetime import date, time
 
-from sqlalchemy import and_
-
 from models import HSIndex, HQ, Quote, Session
 from indicator.basic import change_percent
 
@@ -60,7 +58,7 @@ def week_quote_from_days(day_quotes_of_week, quote_class):
         high=high,
         pre_close=pre_close,
         change=change,
-        change_percent=percent,
+        percent=percent,
         volume=volume,
         amount=amount
     )

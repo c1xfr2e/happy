@@ -45,7 +45,7 @@ def pull_last_quote(security, is_index):
         high=high,
         pre_close=pre_close,
         change=change,
-        change_percent=percent,
+        percent=percent,
         volume=volume,
         amount=amount
     )

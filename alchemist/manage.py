@@ -49,7 +49,7 @@ def index():
             low=hq['low'],
             high=hq['high'],
             change=change,
-            change_percent=change_pct,
+            percent=change_pct,
             volume=hq['volume'],
             money=hq['volume_money']
         )

@@ -26,6 +26,6 @@ class Quote(Base):
 
     pre_close = Column(Numeric(precision=10, scale=3), nullable=False)
     change = Column(Numeric(precision=10, scale=3))
-    change_percent = Column(Numeric(precision=8, scale=3))
+    percent = Column(Numeric(precision=8, scale=3))
 
     turnover = Column(Numeric(precision=8, scale=2))

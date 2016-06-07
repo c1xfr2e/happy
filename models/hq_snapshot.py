@@ -20,7 +20,7 @@ class HQSnapshot(Base):
 
     price = Column(Numeric(precision=10, scale=3), nullable=False)
     change = Column(Numeric(precision=10, scale=3), nullable=False)
-    change_percent = Column(Numeric(precision=8, scale=3), nullable=False)
+    percent = Column(Numeric(precision=8, scale=3), nullable=False)
 
     volume = Column(BigInteger, nullable=False)
     money = Column(BigInteger, nullable=False)
