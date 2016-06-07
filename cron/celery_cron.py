@@ -38,18 +38,8 @@ def pull_stock_profile():
 
 @app.task
 def pull_close_quote():
-    index_code_to_sync = [
-        '000001',
-        '000003',
-        '000016',
-        '000300',
-        '399001',
-        '399006',
-        '399102'
-    ]
-
     ss = Session()
-    for index in ss.query(HSIndex).filter(HSIndex.code.in_(index_code_to_sync)).all():
+    for index in ss.query(HSIndex).all():
         quote = pull_last_quote(index, True)
         if quote:
             ss.add(quote)

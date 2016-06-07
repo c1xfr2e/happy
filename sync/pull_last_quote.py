@@ -2,7 +2,7 @@
 
 from datetime import date, time
 from crawler.tjqka.hq_last import hq_last
-from models import HQ, Quote, Session, HSIndex, Stock
+from models import Quote, Session, Stock
 from indicator.basic import change_percent
 
 
@@ -25,12 +25,7 @@ def pull_last_quote(security, is_index):
         change = hq.get('change', 0) or hq.get('close', 0) - hq.get('pre_close', 0)
         percent = hq.get('change_percent') or change_percent(close, pre_close) if pre_close else 0
 
-    if is_index:
-        model_class = HQ
-    else:
-        model_class = Quote
-
-    quote = model_class(
+    quote = Quote(
         market=security.market,
         code=security.code,
         from_date=from_date,
