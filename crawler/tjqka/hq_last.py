@@ -27,7 +27,7 @@ class HQ(Schema):
     close = fields.Decimal(load_from='10', places=3)
     volume = fields.Decimal(load_from='13', places=0)
     amount = fields.Decimal(load_from='19', places=3)
-    change = fields.Decimal(load_from='264648', places=2)
+    change = fields.Decimal(load_from='264648', places=3)
     change_percent = fields.Decimal(load_from='199112', places=2)
     bid_ask_ratio = fields.Decimal(load_from='461256', places=2)
     bid_ask_diff = fields.Decimal(load_from='395720', places=0)
