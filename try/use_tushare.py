@@ -1,6 +1,11 @@
 # coding: utf8
 
 import tushare as ts
+from tushare.util import dateu
+
+
+cal = dateu.trade_cal()
+
 
 code = '000001'
 
