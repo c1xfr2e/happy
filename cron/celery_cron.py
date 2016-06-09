@@ -1,12 +1,15 @@
 # coding: utf-8
 
+from datetime import datetime, date
+
 from celery import Celery
 from celery.schedules import crontab
 from cron import celery_config
 from sync.pull_stock import pull_stock_profile as psp
 from sync.pull_last_quote import pull_last_quote
-from models import Session, HSIndex, Stock
+from models import Session, HSIndex, Stock, Quote
 from db.mongo import client
+from util.date_time import is_trade_day
 
 import logging
 from config import log_format
@@ -32,12 +35,18 @@ app.conf.CELERYBEAT_SCHEDULE = {
 
 @app.task
 def pull_stock_profile():
+    if not is_trade_day(date.today()):
+        return
+
     codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
     psp(codes)
 
 
 @app.task
 def pull_close_quote():
+    if not is_trade_day(date.today()):
+        return
+
     ss = Session()
     for index in ss.query(HSIndex).all():
         quote = pull_last_quote(index, True)

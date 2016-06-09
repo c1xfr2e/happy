@@ -21,15 +21,17 @@ def pull_stock_profile(stock_codes):
             continue
 
     client.alchemist.stock_codes.update(
-        {'code': {'$in': failed_codes}},
-        {'$set': {'status': 'fetch_profile_failed'}},
-        multi=True
-    )
-    client.alchemist.stock_codes.update(
         {'code': {'$not': {'$in': failed_codes}}},
         {'$set': {'status': 'fetch_profile_done'}},
         multi=True
     )
+    client.alchemist.stock_codes.update(
+        {'code': {'$in': failed_codes}},
+        {'$set': {'status': 'fetch_profile_failed'}},
+        multi=True
+    )
+
+    pull_stock_profile(failed_codes)
 
 
 if __name__ == '__main__':
