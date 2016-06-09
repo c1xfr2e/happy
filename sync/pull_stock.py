@@ -14,12 +14,11 @@ def pull_stock_profile(stock_codes):
         try:
             stock = fetch_stock_profile(code)
             session.merge(stock)
+            session.commit()
         except Exception as e:
             logging.warning('%s: %s' % (code, e))
             failed_codes.append(code)
             continue
-
-    session.commit()
 
     client.alchemist.stock_codes.update(
         {'code': {'$in': failed_codes}},
