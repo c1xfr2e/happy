@@ -43,11 +43,13 @@ def pull_close_quote():
         quote = pull_last_quote(index, True)
         if quote:
             ss.add(quote)
-    ss.commit()
+            ss.commit()
 
     stocks = ss.query(Stock).filter(Stock.status == 'L').all()
     for stock in stocks:
         quote = pull_last_quote(stock, False)
         if quote:
             ss.add(quote)
-    ss.commit()
+            ss.commit()
+
+    # TODO: Creaet week quote at last trading day of week.
