@@ -91,6 +91,9 @@ def create_this_week_quote():
             )
         ).all()
 
+        if not sec_quotes_of_this_week:
+            continue
+
         week_quote = merge_quotes(sec_quotes_of_this_week)
         week_quote.period = 'w1'
         ss.merge(week_quote)
