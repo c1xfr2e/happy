@@ -27,28 +27,28 @@ def group_quotes_by_week(quotes):
     return week_quote_groups
 
 
-def week_quote_from_days(day_quotes_of_week):
-    first = day_quotes_of_week[0]
-    last = day_quotes_of_week[-1]
+def merge_quotes(quotes):
+    first = quotes[0]
+    last = quotes[-1]
 
     pre_close = first.pre_close
     open = first.open
-    high = max(q.high for q in day_quotes_of_week)
-    low = min(q.low for q in day_quotes_of_week)
+    high = max(q.high for q in quotes)
+    low = min(q.low for q in quotes)
     close = last.close
-    volume = sum(q.volume for q in day_quotes_of_week)
-    amount = sum(q.amount for q in day_quotes_of_week)
+    volume = sum(q.volume for q in quotes)
+    amount = sum(q.amount for q in quotes)
     change = last.close - first.pre_close
     percent = change_percent(close, pre_close)
 
-    week_quote = Quote(
+    merged = Quote(
         market=first.market,
         code=first.code,
         from_date=first.from_date,
         to_date=last.to_date,
-        from_time=time(hour=9, minute=15),
-        to_time=time(hour=15),
-        period='w1',
+        from_time=first.from_time,
+        to_time=last.to_time,
+        period='TBD',
         name=first.name,
         open=open,
         close=close,
@@ -63,9 +63,9 @@ def week_quote_from_days(day_quotes_of_week):
 
     if last.turnover:
         estimate_shares = int(last.volume / last.turnover * 100)
-        week_quote.turnover = round(float(volume) / estimate_shares * 100, 3)
+        merged.turnover = round(float(volume) / estimate_shares * 100, 3)
 
-    return week_quote
+    return merged
 
 
 if __name__ == '__main__':
@@ -80,7 +80,8 @@ if __name__ == '__main__':
         week_quotes = []
         week_groups = group_quotes_by_week(day_quotes)
         for wg in week_groups:
-            quote = week_quote_from_days(wg)
+            quote = merge_quotes(wg)
+            quote.period = 'w1'
             week_quotes.append(quote)
 
         ss.add_all(week_quotes)
