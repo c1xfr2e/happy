@@ -1,7 +1,5 @@
 # coding: utf-8
 
-from datetime import datetime
-
 chinese_holidays = [
     '2016-01-01',
     '2016-02-07', '2016-02-08', '2016-02-09', '2016-02-10', '2016-02-11', '2016-02-12', '2016-02-13',
@@ -13,5 +11,9 @@ chinese_holidays = [
 ]
 
 
-def is_trade_day(date_):
+def is_holiday_day(date_):
     return date_.isoweekday() in [6, 7] or date_.strftime('%Y-%m-%d') in chinese_holidays
+
+
+def is_trade_day(date_):
+    return not is_holiday_day(date_)
