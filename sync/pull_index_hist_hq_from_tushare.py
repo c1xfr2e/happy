@@ -20,7 +20,7 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
 
     for timestamp in reversed(hqs.index):
         dt = timestamp.to_datetime()
-        to_date = from_date = date(dt.year, dt.month, dt.day)
+        datetime_ = date(dt.year, dt.month, dt.day)
         row = hqs.loc[timestamp]
 
         open_price = row['open']
@@ -35,10 +35,7 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
         hq_day = HQ(
             market=index.market,
             code=index.code,
-            from_date=from_date,
-            to_date=to_date,
-            from_time=time(hour=9, minute=15),
-            to_time=time(hour=15),
+            datetime=datetime_,
             period='d1',
             name=index.name,
             open=open_price,
@@ -56,7 +53,7 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
 
         pre_close = close
 
-        logging.info('[%s][%s]' %(str(index.code), str(from_date)))
+        logging.info('[%s][%s]' %(str(index.code), str(datetime_)))
 
     sess.commit()
     logging.info(str(index.code) + ' db session commited')

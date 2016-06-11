@@ -8,20 +8,20 @@ from indicator.basic import change_percent
 
 def group_quotes_by_week(quotes):
     first = quotes[0]
-    start_week_date = first.from_date
+    start_week_date = first.datetime
     year = start_week_date.year
     week = start_week_date.isocalendar()[1]
     day_quotes_of_week = [first]
     week_quote_groups = []
     for quote in quotes[1:]:
-        quote_date = quote.from_date
+        quote_date = quote.datetime
         if quote_date.year == year and quote_date.isocalendar()[1] == week:
             day_quotes_of_week.append(quote)
         else:
             week_quote_groups.append(day_quotes_of_week)
             day_quotes_of_week = [quote]
-            year = quote.from_date.year
-            week = quote.from_date.isocalendar()[1]
+            year = quote.datetime.year
+            week = quote.datetime.isocalendar()[1]
     week_quote_groups.append(day_quotes_of_week)
 
     return week_quote_groups
@@ -44,10 +44,7 @@ def merge_quotes(quotes):
     merged = Quote(
         market=first.market,
         code=first.code,
-        from_date=first.from_date,
-        to_date=last.to_date,
-        from_time=first.from_time,
-        to_time=last.to_time,
+        datetime=first.datetime,
         period='TBD',
         name=first.name,
         open=open,
@@ -75,7 +72,7 @@ if __name__ == '__main__':
     for sec in securities:
         day_quotes = ss.query(Quote).filter(
             and_(Quote.market == sec.market, Quote.code == sec.code, Quote.period == 'd1')
-        ).order_by(Quote.from_date.asc()).all()
+        ).order_by(Quote.datetime.asc()).all()
 
         week_quotes = []
         week_groups = group_quotes_by_week(day_quotes)

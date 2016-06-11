@@ -56,10 +56,7 @@ def pull_quotes(start, end, codes=None):
                 quote = Quote(
                     market=stock.market,
                     code=stock.code,
-                    from_date=data['tradeDate'],
-                    to_date=data['tradeDate'],
-                    from_time=time(hour=9, minute=15),
-                    to_time=time(hour=15),
+                    datetime=data['tradeDate'],
                     period='d1',
                     name=stock.name,
                     open=open,

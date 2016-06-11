@@ -1,6 +1,6 @@
 # coding: utf8
 
-from datetime import date, time
+from datetime import date
 from crawler.tjqka.hq_last import hq_last
 from models import Quote, Session, Stock
 from indicator.basic import change_percent
@@ -8,7 +8,6 @@ from indicator.basic import change_percent
 
 def pull_last_quote(security, is_index):
     hq = hq_last(security.market, security.code, is_index)
-    from_date = to_date = date.today()
 
     open = hq.get('open', 0)
     # SUSPEND TODAY
@@ -28,10 +27,7 @@ def pull_last_quote(security, is_index):
     quote = Quote(
         market=security.market,
         code=security.code,
-        from_date=from_date,
-        to_date=to_date,
-        from_time=time(hour=9, minute=15),
-        to_time=time(hour=15),
+        datetime=date.today(),
         period='d1',
         name=security.name,
         open=open,

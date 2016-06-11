@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from datetime import date, time
+from datetime import date
 import logging
 from sqlalchemy import and_
 import tushare as ts
@@ -33,7 +33,8 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
 
     for timestamp in reversed(quotes_df.index):
         dt = timestamp.to_datetime()
-        to_date = from_date = date(dt.year, dt.month, dt.day)
+        datetime_ = date(dt.year, dt.month, dt.day)
+
         row = quotes_df.loc[timestamp]
 
         open = row['open']
@@ -55,10 +56,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
         quote = Quote(
             market=security.market,
             code=security.code,
-            from_date=from_date,
-            to_date=to_date,
-            from_time=time(hour=9, minute=15),
-            to_time=time(hour=15),
+            datetime=datetime_,
             period='d1',
             name=security.name,
             open=open,
@@ -74,8 +72,6 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
 
         sess.merge(quote)
         pre_close = close
-
-        # logging.info('[%s][%s]' %(str(security.code), str(from_date)))
 
     try:
         sess.commit()

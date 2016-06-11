@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from sqlalchemy import Column, String, Date, Time, Numeric, BigInteger
+from sqlalchemy import Column, String, DateTime, Time, Numeric, BigInteger
 from . import Base
 
 
@@ -9,12 +9,9 @@ class Quote(Base):
 
     market = Column(String(16), primary_key=True)
     code = Column(String(10), primary_key=True)
-    from_date = Column(Date, primary_key=True)
-    to_date = Column(Date, primary_key=True)
-    from_time = Column(Time, primary_key=True, server_default='00:00:00')
-    to_time = Column(Time, primary_key=True, server_default='00:00:00')
-
+    datetime = Column(DateTime, primary_key=True)
     period = Column(String(16), primary_key=True)
+
     name = Column(String(16))
 
     open = Column(Numeric(precision=10, scale=3), nullable=False)

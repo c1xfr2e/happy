@@ -85,8 +85,8 @@ def create_this_week_quote():
             and_(
                 Quote.market == sec.market,
                 Quote.code == sec.code,
-                Quote.from_date >= week_first_date,
-                Quote.from_date <= today,
+                Quote.datetime >= week_first_date,
+                Quote.datetime <= today,
                 Quote.period == 'd1'
             )
         ).all()
