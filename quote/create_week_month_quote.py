@@ -95,7 +95,10 @@ if __name__ == '__main__':
             )
         ).order_by(Quote.datetime.asc()).all()
 
+        if not day_quotes:
+            continue
+
         week_quotes = create_week_quote(day_quotes)
-        
+
         ss.add_all(week_quotes)
         ss.commit()
