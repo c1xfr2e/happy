@@ -3,7 +3,7 @@
 from datetime import date, time
 import logging
 import tushare as ts
-from models import Session, HQ, HSIndex
+from models import Session, HSIndex, Quote
 from indicator.basic import change_percent
 
 
@@ -32,7 +32,7 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
         change = close - pre_close
         change_pct = change_percent(close, pre_close)
 
-        hq_day = HQ(
+        hq_day = Quote(
             market=index.market,
             code=index.code,
             datetime=datetime_,

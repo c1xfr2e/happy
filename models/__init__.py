@@ -21,7 +21,6 @@ Base = declarative_base()
 # Session = sessionmaker(bind=engine)
 
 from security_exchange import SecurityExchange
-from hq import HQ
 from hq_snapshot import HQSnapshot
 from hs_index import HSIndex
 from stock import Stock
