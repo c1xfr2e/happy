@@ -99,7 +99,3 @@ def create_this_week_quote():
         ss.merge(week_quote)
         ss.commit()
 
-
-if __name__ == '__main__':
-    f = create_this_week_quote
-    f.apply()

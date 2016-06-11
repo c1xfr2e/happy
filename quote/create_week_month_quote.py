@@ -1,8 +1,8 @@
 # coding: utf-8
 
-from datetime import time
+from datetime import date
 from sqlalchemy import and_
-from models import HSIndex, Quote, Session
+from models import Quote, Session
 from indicator.basic import change_percent
 
 
@@ -65,22 +65,37 @@ def merge_quotes(quotes):
     return merged
 
 
+def create_week_quote(day_quotes):
+    week_quotes = []
+    week_groups = group_quotes_by_week(day_quotes)
+    for wg in week_groups:
+        quote = merge_quotes(wg)
+        quote.period = 'w1'
+        week_quotes.append(quote)
+
+    return week_quotes
+
+
 if __name__ == '__main__':
+    start = date(2016, 6, 6)
+    end = date(2016, 6, 8)
+
     ss = Session()
+
     securities = ss.query(Quote.market, Quote.code).distinct().all()
 
     for sec in securities:
         day_quotes = ss.query(Quote).filter(
-            and_(Quote.market == sec.market, Quote.code == sec.code, Quote.period == 'd1')
+            and_(
+                Quote.market == sec.market,
+                Quote.code == sec.code,
+                Quote.period == 'd1',
+                Quote.datetime >= start,
+                Quote.datetime <= end
+            )
         ).order_by(Quote.datetime.asc()).all()
 
-        week_quotes = []
-        week_groups = group_quotes_by_week(day_quotes)
-        for wg in week_groups:
-            quote = merge_quotes(wg)
-            quote.period = 'w1'
-            week_quotes.append(quote)
-
+        week_quotes = create_week_quote(day_quotes)
+        
         ss.add_all(week_quotes)
-
-    ss.commit()
+        ss.commit()
