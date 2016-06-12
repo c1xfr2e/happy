@@ -31,7 +31,8 @@ def pull_stock_profile(stock_codes):
         multi=True
     )
 
-    pull_stock_profile(failed_codes)
+    if failed_codes:
+        pull_stock_profile(failed_codes)
 
 
 if __name__ == '__main__':
