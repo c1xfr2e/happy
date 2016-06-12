@@ -13,7 +13,7 @@ from sync.pull_last_quote import pull_last_quote
 from models import Session, HSIndex, Stock, Quote
 from db.mongo import client
 from util.date_time import is_trade_day
-from quote.create_week_month_quote import merge_quotes
+from quote.merge_quotes import merge_quotes
 
 from config import log_format
 
@@ -36,7 +36,6 @@ app.conf.CELERYBEAT_SCHEDULE = {
         'task': 'cron.celery_cron.create_this_week_quote',
         'schedule': crontab(day_of_week='fri', hour='17', minute='00')
     }
-
 }
 
 
@@ -98,4 +97,3 @@ def create_this_week_quote():
         week_quote.period = 'w1'
         ss.merge(week_quote)
         ss.commit()
-
