@@ -19,6 +19,9 @@ for stock in stocks:
         and_(Quote.market == stock.market, Quote.code == stock.code, Quote.period == 'd1')
     ).order_by(Quote.datetime.desc()).limit(20).all()
 
+    if not quotes:
+        continue
+
     high_quote = max(quotes, key=lambda q: q.high)
 
     r.hmset(key, {'time': high_quote.datetime, 'high': high_quote.high})
