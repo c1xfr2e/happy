@@ -10,11 +10,15 @@ ss = Session()
 stocks = ss.query(Stock.market, Stock.code).all()
 
 for stock in stocks:
+    key = 'highof20:%s%s' % (stock.market, stock.code)
+    existing = r.hmget(key, 'time')
+    if existing[0]:
+        continue
+
     quotes = ss.query(Quote).filter(
         and_(Quote.market == stock.market, Quote.code == stock.code, Quote.period == 'd1')
     ).order_by(Quote.datetime.desc()).limit(20).all()
 
     high_quote = max(quotes, key=lambda q: q.high)
 
-    key = 'highof20:%s%s' % (high_quote.market, high_quote.code)
     r.hmset(key, {'time': high_quote.datetime, 'high': high_quote.high})
