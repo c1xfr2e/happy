@@ -30,6 +30,11 @@ def create_high_20():
 
 
 def find_high_at_today():
+    close_eq_high = ss.query(Quote.code).filter(
+        and_(Quote.datetime == date.today(), Quote.open == Quote.close)
+    ).all()
+    close_eq_high = [_[0] for _ in close_eq_high]
+
     stocks = ss.query(Stock).all()
     for stock in stocks:
         key = 'highof20:%s%s' % (stock.market, stock.code)
@@ -37,8 +42,9 @@ def find_high_at_today():
         if high_time[0] is None:
             continue
         high_date = datetime.strptime(high_time[0], '%Y-%m-%d %H:%M:%S').date()
-        if high_date == date.today():
+        if high_date == date.today() and stock.code in close_eq_high:
             print stock.code, stock.name
+
 
 
 if __name__ == '__main__':
