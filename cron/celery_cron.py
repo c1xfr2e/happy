@@ -30,7 +30,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
     },
     'pull_close_quote': {
         'task': 'cron.celery_cron.pull_close_quote',
-        'schedule': crontab(day_of_week='mon-fri', hour='16', minute='30')
+        'schedule': crontab(day_of_week='mon-fri', hour='16', minute='00')
     },
     'create_this_week_quote': {
         'task': 'cron.celery_cron.create_this_week_quote',
