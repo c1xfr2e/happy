@@ -5,7 +5,7 @@ import logging
 
 from celery import Celery
 from celery.schedules import crontab
-from sqlalchemy import and_
+from sqlalchemy import and_, not_, tuple_
 
 from cron import celery_config
 from sync.pull_stock import pull_stock_profile as psp
@@ -35,7 +35,19 @@ app.conf.CELERYBEAT_SCHEDULE = {
     'create_this_week_quote': {
         'task': 'cron.celery_cron.create_this_week_quote',
         'schedule': crontab(day_of_week='fri', hour='17', minute='00')
-    }
+    },
+    'sync_quotes_5min_1': {
+        'task': 'cron.celery_cron.sync_quotes',
+        'schedule': crontab(day_of_week='mon-fri', hour='10,13,14', minute='*/5')
+    },
+    'sync_quotes_5min_2': {
+        'task': 'cron.celery_cron.sync_quotes',
+        'schedule': crontab(day_of_week='mon-fri', hour='9', minute='20,25,30,35,40,45,50,55')
+    },
+    'sync_quotes_5min_3': {
+        'task': 'cron.celery_cron.sync_quotes',
+        'schedule': crontab(day_of_week='mon-fri', hour='11', minute='0,5,10,15,20,25,30')
+    },
 }
 
 
@@ -57,11 +69,15 @@ def pull_close_quote():
     for index in ss.query(HSIndex).all():
         quote = pull_last_quote(index, True)
         if quote:
-            ss.add(quote)
+            ss.merge(quote)
             ss.commit()
 
-    stocks = ss.query(Stock).filter(Stock.status == 'L').all()
-    for stock in stocks:
+    updated = ss.query(Quote.market, Quote.code).filter(
+        Quote.datetime >= date.today()).distinct().subquery()
+    to_update = ss.query(Stock).filter(
+        not_(tuple_(Stock.market, Stock.code).in_(updated))).distinct().all()
+
+    for stock in to_update:
         quote = pull_last_quote(stock, False)
         if quote:
             ss.add(quote)
@@ -97,3 +113,9 @@ def create_this_week_quote():
         week_quote.period = 'w1'
         ss.merge(week_quote)
         ss.commit()
+
+
+@app.task
+def sync_quotes():
+    if not is_trade_day(date.today()):
+        return
