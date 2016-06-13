@@ -35,7 +35,9 @@ def find_high_at_today():
     ).all()
     close_eq_high = [_[0] for _ in close_eq_high]
 
-    stocks = ss.query(Stock).all()
+    min_date = date(2016, 5, 13)
+
+    stocks = ss.query(Stock).filter(Stock.listing_date < min_date).all()
     for stock in stocks:
         key = 'highof20:%s%s' % (stock.market, stock.code)
         high_time = r.hmget(key, 'time')
