@@ -9,6 +9,7 @@ from models import Session, Stock, Quote
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 ss = Session()
 
+
 def create_high_20():
     stocks = ss.query(Stock.market, Stock.code).all()
 
