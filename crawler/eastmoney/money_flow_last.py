@@ -89,6 +89,6 @@ def money_flow_last(code, is_index):
 
 
 if __name__ == '__main__':
-    result = money_flow_last('300342', False)
+    result = money_flow_last('000001', True)
     for k, v in result.iteritems():
         print k, v
