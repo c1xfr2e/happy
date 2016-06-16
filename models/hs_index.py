@@ -11,6 +11,6 @@ class HSIndex(Base):
     market = Column(String(16), nullable=False)
     code = Column(String(10), nullable=False)
     name = Column(String(16), nullable=False)
-    alias_code = Column(String(10))
+    alias = Column(String(10))
     full_name = Column(String(32))
     listing_date = Column(Date)
