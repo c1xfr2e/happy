@@ -11,7 +11,7 @@ ss = Session()
 
 
 def create_high_20():
-    stocks = ss.query(Stock.market, Stock.code).all()
+    stocks = ss.query(Stock.code).all()
 
     for stock in stocks:
         quotes = ss.query(Quote).filter(
