@@ -12,6 +12,7 @@ from models import Quote, Stock, Session
 from sync.tldata.config import headers
 
 equd_adj_quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqudAdj.json'
+quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqud.json'
 
 
 def pull_quotes(start, end, codes=None):
@@ -34,7 +35,7 @@ def pull_quotes(start, end, codes=None):
                 'tradeDate': ''
             }
 
-            resp = requests.get(equd_adj_quote_history, headers=headers, params=payload)
+            resp = requests.get(quote_history, headers=headers, params=payload)
             json_res = resp.json()
             if json_res['retCode'] != 1:
                 logging.error('Request failed: [%s] %s' % (stock.code, json_res['retMsg']))

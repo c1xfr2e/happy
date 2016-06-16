@@ -7,8 +7,8 @@ from sync.tldata.config import headers
 
 url = 'https://api.wmcloud.com/data/v1/api/market/getMktAdjf.json'
 payload = {
-    'endDate': date(2016, 6, 6).strftime('%Y%m%d'),
-    'ticker': '000418'
+    'endDate': date(2016, 6, 15).strftime('%Y%m%d'),
+    'ticker': '601377'
 }
 
 resp = requests.get(url, headers=headers, params=payload)
