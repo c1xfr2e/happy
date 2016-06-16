@@ -72,10 +72,12 @@ def pull_close_quote():
             ss.merge(quote)
             ss.commit()
 
-    updated = ss.query(Quote.market, Quote.code).filter(
-        Quote.datetime >= date.today()).distinct().subquery()
+    updated = ss.query(Quote.code).filter(Quote.datetime >= date.today()).distinct().subquery()
     to_update = ss.query(Stock).filter(
-        not_(tuple_(Stock.market, Stock.code).in_(updated))).distinct().all()
+        not_(
+            Stock.code.in_(updated)
+        )
+    ).distinct().all()
 
     for stock in to_update:
         quote = pull_last_quote(stock, False)
@@ -94,11 +96,10 @@ def create_this_week_quote():
     today = date.today()
     week_first_date = today - timedelta(days=today.weekday())
 
-    securities = ss.query(Quote.market, Quote.code).distinct().all()
+    securities = ss.query(Quote.code).distinct().all()
     for sec in securities:
         sec_quotes_of_this_week = ss.query(Quote).filter(
             and_(
-                Quote.market == sec.market,
                 Quote.code == sec.code,
                 Quote.datetime >= week_first_date,
                 Quote.datetime <= today,

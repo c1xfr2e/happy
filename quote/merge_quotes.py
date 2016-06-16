@@ -42,11 +42,9 @@ def merge_quotes(quotes):
     percent = change_percent(close, pre_close)
 
     merged = Quote(
-        market=first.market,
         code=first.code,
         datetime=first.datetime,
         period='TBD',
-        name=first.name,
         open=open,
         close=close,
         low=low,
@@ -82,12 +80,11 @@ if __name__ == '__main__':
 
     ss = Session()
 
-    securities = ss.query(Quote.market, Quote.code).distinct().all()
+    securities = ss.query(Quote.code).distinct().all()
 
     for sec in securities:
         day_quotes = ss.query(Quote).filter(
             and_(
-                Quote.market == sec.market,
                 Quote.code == sec.code,
                 Quote.period == 'd1',
                 Quote.datetime >= start,

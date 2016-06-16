@@ -15,7 +15,10 @@ def create_high_20():
 
     for stock in stocks:
         quotes = ss.query(Quote).filter(
-            and_(Quote.market == stock.market, Quote.code == stock.code, Quote.period == 'd1')
+            and_(
+                Quote.code == stock.code,
+                Quote.period == 'd1'
+            )
         ).order_by(Quote.datetime.desc()).limit(20).all()
 
         if not quotes:

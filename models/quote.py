@@ -7,12 +7,9 @@ from . import Base
 class Quote(Base):
     __tablename__ = 'quote'
 
-    market = Column(String(16), primary_key=True)
     code = Column(String(10), primary_key=True)
     datetime = Column(DateTime, primary_key=True)
     period = Column(String(16), primary_key=True)
-
-    name = Column(String(16))
 
     open = Column(Numeric(precision=10, scale=3), nullable=False)
     high = Column(Numeric(precision=10, scale=3), nullable=False)

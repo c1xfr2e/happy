@@ -54,11 +54,9 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
         '''
 
         quote = Quote(
-            market=security.market,
             code=security.code,
             datetime=datetime_,
             period='d1',
-            name=security.name,
             open=open,
             close=close,
             low=low,

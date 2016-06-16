@@ -55,11 +55,9 @@ def pull_quotes(start, end, codes=None):
                 pre_close = Decimal(data['actPreClosePrice']).quantize(Decimal('.001'))
 
                 quote = Quote(
-                    market=stock.market,
                     code=stock.code,
                     datetime=data['tradeDate'],
                     period='d1',
-                    name=stock.name,
                     open=open,
                     close=close,
                     low=low,

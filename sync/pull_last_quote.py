@@ -25,11 +25,9 @@ def pull_last_quote(security, is_index):
         percent = hq.get('change_percent') or change_percent(close, pre_close) if pre_close else 0
 
     quote = Quote(
-        market=security.market,
         code=security.code,
         datetime=date.today(),
         period='d1',
-        name=security.name,
         open=open,
         close=close,
         low=low,
@@ -41,7 +39,10 @@ def pull_last_quote(security, is_index):
         amount=amount
     )
 
-    if not is_index:
+    if is_index:
+        if security.alias:
+            quote.code = security.alias
+    else:
         turnover = volume / security.tradable_shares * 100 if security.tradable_shares > 0 else 0
         quote.turnover = round(turnover, 2)
 

@@ -33,11 +33,9 @@ def pull_history_hq_of_index(index, start_date=None, end_date=None):
         change_pct = change_percent(close, pre_close)
 
         hq_day = Quote(
-            market=index.market,
             code=index.code,
             datetime=datetime_,
             period='d1',
-            name=index.name,
             open=open_price,
             close=close,
             low=low,
