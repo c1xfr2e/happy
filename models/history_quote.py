@@ -3,10 +3,12 @@
 from sqlalchemy import Table, Column, MetaData
 from sqlalchemy import String, DateTime, Numeric, BigInteger
 
-metadata = MetaData()
+from models import engine
 
-QuoteBefore2016 = Table(
-    'quote_before_2016', metadata,
+metadata = MetaData(bind=engine)
+
+Quote2015 = Table(
+    'quote_2015', metadata,
     Column('code', String(10), primary_key=True),
     Column('datetime', DateTime, primary_key=True),
     Column('period', String(16), primary_key=True),
@@ -21,3 +23,6 @@ QuoteBefore2016 = Table(
     Column('percent', Numeric(precision=10, scale=3)),
     Column('turnover', Numeric(precision=8, scale=2))
 )
+
+if not Quote2015.exists():
+    Quote2015.create()
