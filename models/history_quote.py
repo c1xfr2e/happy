@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from sqlalchemy import Table, Column, MetaData
+from sqlalchemy import Table, Column, MetaData, Index
 from sqlalchemy import String, DateTime, Numeric, BigInteger
 
 from models import engine
@@ -21,7 +21,8 @@ Quote2015 = Table(
     Column('pre_close', Numeric(precision=10, scale=3), nullable=False),
     Column('change', Numeric(precision=10, scale=3)),
     Column('percent', Numeric(precision=10, scale=3)),
-    Column('turnover', Numeric(precision=8, scale=2))
+    Column('turnover', Numeric(precision=8, scale=2)),
+    Index('code_datetime', 'code', 'datetime')
 )
 
 if not Quote2015.exists():
