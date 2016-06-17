@@ -35,7 +35,10 @@ app.conf.CELERYBEAT_SCHEDULE = {
     'create_this_week_quote': {
         'task': 'cron.celery_cron.create_this_week_quote',
         'schedule': crontab(day_of_week='fri', hour='17', minute='00')
-    },
+    }
+}
+
+'''
     'sync_quotes_5min_1': {
         'task': 'cron.celery_cron.sync_quotes',
         'schedule': crontab(day_of_week='mon-fri', hour='10,13,14', minute='*/5')
@@ -48,7 +51,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
         'task': 'cron.celery_cron.sync_quotes',
         'schedule': crontab(day_of_week='mon-fri', hour='11', minute='0,5,10,15,20,25,30')
     },
-}
+'''
 
 
 @app.task
