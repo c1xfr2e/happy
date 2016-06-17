@@ -35,7 +35,7 @@ def pull_quotes(start, end, codes=None):
                 'tradeDate': ''
             }
 
-            resp = requests.get(quote_history, headers=headers, params=payload)
+            resp = requests.get(equd_adj_quote_history, headers=headers, params=payload)
             json_res = resp.json()
             if json_res['retCode'] != 1:
                 logging.error('Request failed: [%s] %s' % (stock.code, json_res['retMsg']))
