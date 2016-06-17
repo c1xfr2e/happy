@@ -5,7 +5,6 @@ import json
 from decimal import Decimal
 from collections import OrderedDict
 from marshmallow import Schema, fields
-from crawler.util import stock_market
 from const import market_of_index, tjqka_market_id
 
 
@@ -34,7 +33,7 @@ class HQTime(Schema):
         return hqs
 
 
-def hq_last(code, index=False):
+def hq_time(code, index=False):
     if index:
         market = market_of_index[code]
     else:
@@ -55,7 +54,7 @@ def hq_last(code, index=False):
 
 
 if __name__ == '__main__':
-    hq_time = hq_last('399006', index=True)
+    hq_time = hq_time('399006', index=True)
     volume = Decimal(0)
     volume_money = Decimal(0)
     for k, v in hq_time['hq'].iteritems():

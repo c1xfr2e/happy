@@ -2,9 +2,55 @@
 
 import re
 import requests
+from decimal import Decimal
 from bs4 import BeautifulSoup
+from marshmallow import Schema, fields, post_load
 
 url = 'http://stockpage.10jqka.com.cn/{code}/bonus/'
+
+
+class Dividend(Schema):
+    plan = fields.String(load_from=u'分红方案说明')
+    ex_date = fields.String(load_from=u'A股除权除息日')
+    div_date = fields.String(load_from=u'A股派息日')
+    progress = fields.String(load_from=u'方案进度')
+    base = fields.Integer()
+    cash = fields.Decimal()
+    shares = fields.Integer()
+
+    @post_load
+    def parse_plan(self, data):
+        assert 'plan' in data
+        if data['plan'] == u'不分配不转增':
+            return None
+
+        plan_shares_and_bonus = u'(\d+)转(\d+)股派(\d*\.\d+|\d+)元'
+        plan_only_bonus = u'(\d+)派(\d*\.\d+|\d+)元'
+        plan_only_shares = u'(\d+)转(\d+)股'
+
+        m = re.match(plan_shares_and_bonus, data['plan']) or \
+            re.match(plan_only_bonus, data['plan']) or \
+            re.match(plan_only_shares, data['plan'])
+        if not m:
+            return None
+
+        groups = m.groups()
+        if m.re.pattern == plan_shares_and_bonus:
+            data['base'] = int(groups[0])
+            data['shares'] = int(groups[1])
+            data['cash'] = Decimal(groups[2])
+        elif m.re.pattern == plan_only_bonus:
+            data['base'] = int(groups[0])
+            data['cash'] = Decimal(groups[1])
+        elif m.re.pattern == plan_only_shares:
+            data['base'] = int(groups[0])
+            data['shares'] = int(groups[1])
+
+        return data
+
+
+class History(Schema):
+    dividends = fields.Nested(Dividend, many=True)
 
 
 def fetch_exdiv_history(code):
@@ -19,12 +65,9 @@ def fetch_exdiv_history(code):
         dict(zip(heads, [td.text for td in tr.find_all('td')])) for tr in body_tr_list
     ]
 
-    exdiv_shares_and_bonus = u'(\d+)转(\d+)股派(\d*\.\d+|\d+)元'
-    exdiv_only_bonus = u'(\d+)派(\d*\.\d+|\d+)元'
-    exdiv_only_shares = u'(\d+)转(\d+)股'
-
-    for r in records:
-        exdiv_plan = r[u'分红方案说明']
+    schema = History()
+    result = schema.load({'dividends': records})
+    return result.data
 
 
 if __name__ == '__main__':
