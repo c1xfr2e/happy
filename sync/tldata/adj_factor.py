@@ -1,18 +1,21 @@
 # coding: utf-8
 
-from datetime import date, time
+import pickle
+from datetime import date
 import requests
 from sync.tldata.config import headers
 
 
+data = pickle.load(open('../../data/exdiv/600036', 'rb'))
+
+
 url = 'https://api.wmcloud.com/data/v1/api/market/getMktAdjf.json'
 payload = {
-    'endDate': date(2016, 6, 15).strftime('%Y%m%d'),
-    'ticker': '601377'
+    'endDate': date.today().strftime('%Y%m%d'),
+    'ticker': '300342'
 }
 
 resp = requests.get(url, headers=headers, params=payload)
 json_res = resp.json()
-for data in json_res['data']:
-    print data['exDivDate'], data['adjFactor']
-
+data = json_res['data']
+pickle.dump(data, open('../../data/exdiv/300342', 'w'))
