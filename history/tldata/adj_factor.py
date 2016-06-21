@@ -2,9 +2,10 @@
 
 import pickle
 from datetime import date
-import requests
-from sync.tldata.config import headers
 
+import requests
+
+from history.tldata import headers
 
 data = pickle.load(open('../../data/exdiv/600036', 'rb'))
 

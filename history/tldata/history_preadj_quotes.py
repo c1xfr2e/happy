@@ -1,15 +1,15 @@
 # coding: utf-8
 
 import logging
-import requests
-from datetime import date, time
+from datetime import date
 from decimal import Decimal
 
+import requests
 from sqlalchemy import and_
 
+from history.tldata import headers
 from indicator.basic import change_percent
 from models import Quote, Stock, Session
-from sync.tldata.config import headers
 
 equd_adj_quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqudAdj.json'
 quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqud.json'

@@ -1,10 +1,11 @@
 # coding: utf-8
 
-import requests
 import logging
-from models import Stock, Session
-from sync.tldata.config import headers
 
+import requests
+
+from history.tldata import headers
+from models import Stock, Session
 
 url_stock_info = 'https://api.wmcloud.com/data/v1/api/equity/getEqu.json'
 url_cnspell = 'https://api.wmcloud.com/data/v1/api/master/getSecID.json'
