@@ -14,7 +14,7 @@ url = 'mysql://{user}:{passwd}@{host}/{database}?{params}'
 aliyun_mysql_url = url.format(
     host=host, user=user, passwd=passwd, database=database, params=param_charset
 )
-engine = create_engine(aliyun_mysql_url, encoding='utf-8', echo=True)
+engine = create_engine(aliyun_mysql_url, encoding='utf-8')
 Base = declarative_base()
 
 # Base.metadata.bind = engine
