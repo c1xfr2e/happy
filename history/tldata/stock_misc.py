@@ -4,7 +4,7 @@ import logging
 
 import requests
 
-from history.tldata import headers
+from history.tldata.config import headers
 from models import Stock, Session
 
 url_stock_info = 'https://api.wmcloud.com/data/v1/api/equity/getEqu.json'
@@ -56,5 +56,3 @@ for stock in stocks:
         )
 
 sess.commit()
-
-

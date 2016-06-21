@@ -7,7 +7,7 @@ from decimal import Decimal
 import requests
 from sqlalchemy import and_
 
-from history.tldata import headers
+from history.tldata.config import headers
 from indicator.basic import change_percent
 from models import Quote, Stock, Session
 

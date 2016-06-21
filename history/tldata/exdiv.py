@@ -5,7 +5,7 @@ from datetime import date
 
 import requests
 
-from history.tldata import headers
+from history.tldata.config import headers
 
 data = pickle.load(open('../../data/exdiv/600036', 'rb'))
 
