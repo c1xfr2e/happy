@@ -6,7 +6,7 @@ from db.mongo import client
 from models import Session
 
 
-def pull_stock_profile(stock_codes):
+def update_stock_profile(stock_codes):
     session = Session()
     failed_codes = []
 
@@ -32,9 +32,9 @@ def pull_stock_profile(stock_codes):
     )
 
     if failed_codes:
-        pull_stock_profile(failed_codes)
+        update_stock_profile(failed_codes)
 
 
 if __name__ == '__main__':
     codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
-    pull_stock_profile(codes)
+    update_stock_profile(codes)

@@ -8,7 +8,7 @@ from celery.schedules import crontab
 from sqlalchemy import and_, not_, tuple_
 
 from cron import celery_config
-from sync.pull_stock import pull_stock_profile as psp
+from sync.pull_stock import update_stock_profile
 from sync.pull_last_quote import pull_last_quote
 from models import Session, HSIndex, Stock, Quote
 from db.mongo import client
@@ -60,7 +60,7 @@ def pull_stock_profile():
         return
 
     codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
-    psp(codes)
+    update_stock_profile(codes)
 
 
 @app.task
