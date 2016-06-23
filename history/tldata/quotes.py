@@ -15,7 +15,24 @@ equd_adj_quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqudA
 quote_history = 'https://api.wmcloud.com/data/v1/api/market/getMktEqud.json'
 
 
-def pull_quotes(start, end, codes=None):
+def get_history_quotes(start_date, end_date, code):
+    payload = {
+        'field': '',
+        'beginDate': start_date.strftime('%Y%m%d'),
+        'endDate': end_date.strftime('%Y%m%d'),
+        'secID': '',
+        'ticker': code,
+        'tradeDate': ''
+    }
+    resp = requests.get(equd_adj_quote_history, headers=headers, params=payload)
+    json_res = resp.json()
+    if json_res['retCode'] != 1:
+        logging.error('Request failed: [%s] %s' % (code, json_res['retMsg']))
+
+    return json_res['data']
+
+
+def get_quotes(start, end, codes=None):
     sess = Session()
     criterion = Stock.status == 'L'
     if isinstance(codes, list):
@@ -84,4 +101,4 @@ def pull_quotes(start, end, codes=None):
 if __name__ == '__main__':
     start_date = date(2010, 1, 4)
     end_date = date(2010, 1, 8)
-    pull_quotes(start_date, end_date, codes=['000418'])
+    get_quotes(start_date, end_date, codes=['000418'])
