@@ -7,11 +7,11 @@ cal = dateu.trade_cal()
 
 code = '000001'
 
+'''
 df_quotes = ts.get_hist_data('sh', start='2010-01-01', ktype='D')
 print df_quotes
 indices = df_quotes.index
 
-'''
 totol_all = ts.get_realtime_quotes('300342')
 for i in totol_all.index:
     row = totol_all.loc[i]
@@ -19,7 +19,7 @@ for i in totol_all.index:
 '''
 
 
-fuquan_quotes = ts.get_h_data('000001', start='2010-01-01', index=True, autype=None)
+fuquan_quotes = ts.get_h_data('600000', start='1999-11-10', index=False, autype=None)
 print fuquan_quotes
 # for i in fuquan_quotes.index:
 #    row = fuquan_quotes.loc[i]
