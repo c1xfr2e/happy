@@ -19,7 +19,7 @@ def model_of_quote(code, date_):
         Column('close', Numeric(precision=10, scale=3), nullable=False),
         Column('volume', BigInteger, nullable=False),
         Column('amount', BigInteger, nullable=False),
-        Column('pre_close', Numeric(precision=10, scale=3), nullable=False),
+        Column('pre_close', Numeric(precision=10, scale=3)),
         Column('change', Numeric(precision=10, scale=3)),
         Column('percent', Numeric(precision=10, scale=3)),
         Column('turnover', Numeric(precision=8, scale=2)),
