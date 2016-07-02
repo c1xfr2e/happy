@@ -123,3 +123,7 @@ def create_this_week_quote():
 def sync_quotes():
     if not is_trade_day(date.today()):
         return
+
+
+if __name__ == '__main__':
+    pull_close_quote.apply()
