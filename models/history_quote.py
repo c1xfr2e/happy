@@ -6,7 +6,7 @@ from sqlalchemy import String, DateTime, Numeric, BigInteger
 from models import engine
 
 
-def model_of_quote(code, date_):
+def table_of_quote(code, date_):
     metadata = MetaData(bind=engine)
     quote_table = Table(
         'quotes_%s' % date_.year, metadata,
