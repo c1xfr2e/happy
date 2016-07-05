@@ -48,4 +48,7 @@ stocks = ss.query(Stock.code).all()
 for stock in stocks:
     quote_inserts = read_history_quotes(stock.code)
     for ins in quote_inserts:
-        conn.execute(ins)
+        try:
+            conn.execute(ins)
+        except Exception as e:
+            continue

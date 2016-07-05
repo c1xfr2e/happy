@@ -27,7 +27,4 @@ def table_of_quote(code, date_):
         Index('datetime_period', 'datetime', 'period')
     )
 
-    if not quote_table.exists():
-        quote_table.create()
-
     return quote_table
