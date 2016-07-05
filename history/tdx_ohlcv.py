@@ -7,7 +7,7 @@ from models import Session, engine, Stock
 
 
 def read_history_quotes(code):
-    f_ohlcv = open('../data/history_ohlcv/%s.txt' % code, 'rb')
+    f_ohlcv = open('data/history_ohlcv/%s.txt' % code, 'rb')
     inserts = []
     while True:
         line = f_ohlcv.readline().decode('gbk').rstrip('\r\n')
