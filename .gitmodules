@@ -1,0 +1,3 @@
+[submodule "data/history_ohlcv"]
+	path = data/history_ohlcv
+	url = git@github.com:bluecover/history_ohlcv.git
