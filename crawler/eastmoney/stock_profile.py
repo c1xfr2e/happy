@@ -132,7 +132,7 @@ def fetch_stock_profile(stock_code):
 
 if __name__ == '__main__':
     try:
-        stock = fetch_stock_profile('600666')
+        stock = fetch_stock_profile('601127')
         print stock
     except Exception as e:
         import os, sys, traceback

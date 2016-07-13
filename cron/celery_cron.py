@@ -1,17 +1,16 @@
 # coding: utf-8
 
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 import logging
 
 from celery import Celery
 from celery.schedules import crontab
-from sqlalchemy import and_, not_, tuple_
+from sqlalchemy import and_, not_
 
 from cron import celery_config
 from sync.pull_stock import update_stock_profile
 from sync.pull_last_quote import pull_last_quote
 from models import Session, HSIndex, Stock, Quote
-from db.mongo import client
 from util.date_time import is_trade_day
 from quote.merge_quotes import merge_quotes
 
@@ -59,8 +58,12 @@ def pull_stock_profile():
     if not is_trade_day(date.today()):
         return
 
-    codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
-    update_stock_profile(codes)
+    ss = Session()
+    to_update = ss.query(Stock.code).filter(
+        Stock.update_time < date.today()
+    ).distinct().all()
+
+    update_stock_profile([_.code for _ in to_update])
 
 
 @app.task
@@ -126,4 +129,4 @@ def sync_quotes():
 
 
 if __name__ == '__main__':
-    pull_close_quote.apply()
+    pull_stock_profile.apply()
