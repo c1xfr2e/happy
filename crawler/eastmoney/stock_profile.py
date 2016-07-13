@@ -47,7 +47,9 @@ def fetch_stock_profile(stock_code):
     r = requests.get(url)
     soup = BeautifulSoup(r.content.decode('gbk'))
 
-    stock_name = soup.find('h2', id='name').text
+    name_elem = soup.find('h2', id='name')
+    stock_name = name_elem.text if name_elem else None
+
     # last_price = soup.find('strong', id='price9').text
 
     status = 'L'
@@ -101,7 +103,6 @@ def fetch_stock_profile(stock_code):
     stock = Stock(
         market=market,
         code=stock_code,
-        name=stock_name,
         status=status,
         listing_date=listing_date,
         outstanding_shares=outstanding_shares,
@@ -123,9 +124,18 @@ def fetch_stock_profile(stock_code):
         update_time=datetime.now()
     )
 
+    if stock_name:
+        stock.name = stock_name
+
     return stock
 
 
 if __name__ == '__main__':
-    stock = fetch_stock_profile('300342')
-    print stock
+    try:
+        stock = fetch_stock_profile('600666')
+        print stock
+    except Exception as e:
+        import os, sys, traceback
+        exc_info = sys.exc_info()
+        s = traceback.format_exception(*exc_info)
+        del exc_info

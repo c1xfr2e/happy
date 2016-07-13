@@ -36,5 +36,5 @@ def update_stock_profile(stock_codes):
 
 
 if __name__ == '__main__':
-    codes = [_['code'] for _ in client.alchemist.stock_codes.find()]
+    codes = ['300342']
     update_stock_profile(codes)
