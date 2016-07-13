@@ -44,8 +44,8 @@ def value_or_zero(data, function, zero=0):
 def fetch_stock_profile(stock_code):
     market = 'sh' if stock_code.startswith('6') else 'sz'
     url = stock_page_url.format(market=market, stock_code=stock_code)
-    r = requests.get(url)
-    soup = BeautifulSoup(r.content.decode('gbk'))
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.content.decode('gbk'))
 
     name_elem = soup.find('h2', id='name')
     stock_name = name_elem.text if name_elem else None
@@ -89,8 +89,8 @@ def fetch_stock_profile(stock_code):
     roe = value_or_zero(datas.get(u'ROE'), cntext_to_number)
     outstanding_shares = value_or_zero(datas.get(u'总股本'), cntext_to_int)
     tradable_shares = value_or_zero(datas.get(u'流通股'), cntext_to_int)
-    market_value=value_or_zero(datas.get(u'总值'), cntext_to_number)
-    circulating_value=value_or_zero(datas.get(u'流值'), cntext_to_number)
+    market_value = value_or_zero(datas.get(u'总值'), cntext_to_number)
+    circulating_value = value_or_zero(datas.get(u'流值'), cntext_to_number)
     retained_earnings_per_share = value_or_zero(datas.get(u'每股未分配利润'), cntext_to_number)
     debt_ratio = value_or_zero(datas.get(u'负债率'), cntext_to_number)
     listing_date_str = value_or_zero(datas.get(u'上市时间'), str, zero='-')
