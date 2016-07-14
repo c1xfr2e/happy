@@ -2,7 +2,6 @@
 
 import logging
 from crawler.eastmoney.stock_profile import fetch_stock_profile
-from db.mongo import client
 from models import Session
 
 
@@ -19,17 +18,6 @@ def update_stock_profile(stock_codes):
             logging.warning('%s: %s' % (code, e))
             failed_codes.append(code)
             continue
-
-    client.alchemist.stock_codes.update(
-        {'code': {'$not': {'$in': failed_codes}}},
-        {'$set': {'status': 'fetch_profile_done'}},
-        multi=True
-    )
-    client.alchemist.stock_codes.update(
-        {'code': {'$in': failed_codes}},
-        {'$set': {'status': 'fetch_profile_failed'}},
-        multi=True
-    )
 
     if failed_codes:
         update_stock_profile(failed_codes)
