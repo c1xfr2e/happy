@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import logging
+from time import sleep
 from crawler.eastmoney.stock_profile import fetch_stock_profile
 from models import Session
 
@@ -20,6 +21,7 @@ def update_stock_profile(stock_codes):
             continue
 
     if failed_codes:
+        sleep(60)
         update_stock_profile(failed_codes)
 
 
