@@ -1,13 +1,10 @@
 # coding: utf-8
 
-from datetime import datetime
-
 from sqlalchemy import and_
 from sqlalchemy.sql import func
 
 from models import Session, HSIndex, Quote
 from crawler.tjqka.hq_last import hq_last
-from db.mongo import client
 
 ss = Session()
 
@@ -38,7 +35,4 @@ for result in lastest_quotes:
             'new': last['close']
         })
 
-client.alchemist.quote_adj.insert({
-    'date': datetime.now(),
-    'xd': xd_list
-})
+print xd_list

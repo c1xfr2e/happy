@@ -6,7 +6,6 @@ from sqlalchemy import and_
 import tushare as ts
 from models import Session, Quote, Stock
 from indicator.basic import change_percent
-from db.mongo import client
 
 
 def pull_history_quotes(security, is_index, start_date=None, end_date=None):
@@ -16,13 +15,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
     try:
         quotes_df = ts.get_h_data(security.code, start=str(start_date), end=str(end_date), index=is_index, pause=0.01)
     except:
-        result = client.alchemist.pull_hist_failed.update(
-            {'market': security.market, 'code': security.code},
-            {'market': security.market, 'code': security.code, 'reason': 'ts.get_h_data throw exception'},
-            upsert=True
-        )
         logging.error('Pull tushare history quotes failed.')
-        logging.error(result)
         return
 
     index_riter = reversed(quotes_df.index)
@@ -75,13 +68,7 @@ def pull_history_quotes(security, is_index, start_date=None, end_date=None):
         sess.commit()
         logging.info(str(security.code) + ' db session commited')
     except:
-        result = client.alchemist.pull_hist_failed.update(
-            {'market': security.market, 'code': security.code},
-            {'market': security.market, 'code': security.code, 'reason': 'session commit exception'},
-            upsert=True
-        )
         logging.error('Session commit failed.')
-        logging.error(result)
         return
 
 
