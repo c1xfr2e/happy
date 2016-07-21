@@ -8,7 +8,7 @@ from celery.schedules import crontab
 from sqlalchemy import and_, not_
 
 from cron import celery_config
-from sync.pull_stock import update_stock_profile
+from sync.pull_stock import update_stock_profile as usp
 from sync.pull_last_quote import pull_last_quote
 from models import Session, HSIndex, Stock, Quote
 from util.date_time import is_trade_day
@@ -23,8 +23,8 @@ app = Celery('celery_cron')
 app.config_from_object(celery_config)
 
 app.conf.CELERYBEAT_SCHEDULE = {
-    'pull_stock_profile': {
-        'task': 'cron.celery_cron.pull_stock_profile',
+    'update_stock_profile': {
+        'task': 'cron.celery_cron.update_stock_profile',
         'schedule': crontab(day_of_week='mon-fri', hour='15', minute='5')
     },
     'pull_close_quote': {
@@ -54,7 +54,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
 
 
 @app.task
-def pull_stock_profile():
+def update_stock_profile():
     if not is_trade_day(date.today()):
         return
 
@@ -63,7 +63,7 @@ def pull_stock_profile():
         Stock.update_time < date.today()
     ).distinct().all()
 
-    update_stock_profile([_.code for _ in to_update])
+    usp([_.code for _ in to_update])
 
 
 @app.task
