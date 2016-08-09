@@ -77,7 +77,9 @@ def fetch_stock_profile(stock_code):
 
     eps = value_or_zero(datas.get(u'收益(一)'), Decimal)
     if eps == 0:
-        eps = value_or_zero(datas.get(u'收益'), Decimal)
+        eps = value_or_zero(datas.get(u'收益(二)'), Decimal)
+    if eps == 0:
+        eps = value_or_zero(datas.get(u'收益(三)'), Decimal)
 
     pe = value_or_zero(datas.get(u'PE(动)'), Decimal)
     asset_value_per_share = value_or_zero(datas.get(u'净资产'), Decimal)
@@ -132,7 +134,7 @@ def fetch_stock_profile(stock_code):
 
 if __name__ == '__main__':
     try:
-        stock = fetch_stock_profile('601127')
+        stock = fetch_stock_profile('300017')
         print stock
     except Exception as e:
         import os, sys, traceback

@@ -10,6 +10,13 @@ from const import market_of_index, tjqka_market_id
 
 time_hq_url = 'http://d.10jqka.com.cn/v2/time/{market_id}_{code}/last.js'
 
+host = 'd.10jqka.com.cn'
+referer = 'http://stockpage.10jqka.com.cn/realHead_v2.html'
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) ' \
+             'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+             'Chrome/50.0.2661.102 ' \
+             'Safari/537.36'
+
 
 class HQTime(Schema):
     name = fields.String()
@@ -40,7 +47,13 @@ def hq_time(code, index=False):
         market = 'sh' if code.startswith('6') else 'sz'
     url = time_hq_url.format(market_id=tjqka_market_id[market], code=code)
 
-    resp = requests.get(url)
+    headers = {
+        'Host': host,
+        'Referer': referer,
+        'User-Agent': user_agent
+    }
+    resp = requests.get(url, headers=headers)
+
     content = resp.content
 
     text = content[content.find('(') + 1:content.rfind(')')]
@@ -54,7 +67,7 @@ def hq_time(code, index=False):
 
 
 if __name__ == '__main__':
-    hq_time = hq_time('399006', index=True)
+    hq_time = hq_time('1A0001', index=True)
     volume = Decimal(0)
     volume_money = Decimal(0)
     for k, v in hq_time['hq'].iteritems():
