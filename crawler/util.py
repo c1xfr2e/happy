@@ -11,7 +11,7 @@ cn_number_unit = {
 }
 
 
-def cntext_to_number(text):
+def cn_text_to_number(text):
     """
         Convert text to number:
             '21.62亿' --> 21.62 * 10^8
@@ -31,13 +31,13 @@ def cntext_to_number(text):
     return Decimal(text[0:-1]) * Decimal(unit)
 
 
-def cntext_to_int(text):
-    num = cntext_to_number(text)
+def cn_text_to_int(text):
+    num = cn_text_to_number(text)
     return int(num) if num is not None else None
 
 
-def cntext_to_float(text):
-    num = cntext_to_number(text)
+def cn_text_to_float(text):
+    num = cn_text_to_number(text)
     return float(num) if num is not None else None
 
 
@@ -51,12 +51,12 @@ def index_market(code):
 
 
 if __name__ == '__main__':
-    n = cntext_to_number('21.62亿'.decode('utf8'))
+    n = cn_text_to_number('21.62亿'.decode('utf8'))
     assert n == int(21.62 * 10**8)
-    n = cntext_to_number('3215万')
+    n = cn_text_to_number('3215万')
     assert n == 3215 * 10**4
 
     try:
-        _ = cntext_to_number('-')
+        _ = cn_text_to_number('-')
     except Exception as e:
-        print e
+        print(e)

@@ -20,11 +20,11 @@ Base = declarative_base()
 # Base.metadata.bind = engine
 # Session = sessionmaker(bind=engine)
 
-from security_exchange import SecurityExchange
-from hs_index import HSIndex
-from stock import Stock
-from quote import Quote
-from index_ohlcv import IndexOhlcv
+from .security_exchange import SecurityExchange
+from .hs_index import HSIndex
+from .stock import Stock
+from .quote import Quote
+from .index_ohlcv import IndexOhlcv
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)

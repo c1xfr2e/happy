@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from marshmallow import fields
-from util import cntext_to_int, cntext_to_float
+from util import cn_text_to_int, cn_text_to_float
 
 
 class ExtField(fields.Field):
@@ -30,9 +30,9 @@ class ExtField(fields.Field):
 
 class CnNumberInt(ExtField):
     def _convert_value(self, value):
-        return cntext_to_int(value)
+        return cn_text_to_int(value)
 
 
 class CnNumberFloat(ExtField):
     def _convert_value(self, value):
-        return cntext_to_float(value)
+        return cn_text_to_float(value)

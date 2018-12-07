@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from sqlalchemy import Column, String, DateTime, Numeric, BigInteger
+from sqlalchemy import Column, String
 from . import Base
 
 
@@ -11,4 +11,3 @@ class SecurityExchange(Base):
     code = Column(String(10))
     alias_code = Column(String(10))
     name = Column(String(16))
-
